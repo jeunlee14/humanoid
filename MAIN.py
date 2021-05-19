@@ -42,6 +42,7 @@ except:
 while True:
     start_time = timeit.default_timer()  # 시작 시간 체크
     ret, frame = cap.read()  # 무한루프를 돌려서 사진을 동영상으로 변경   # ret은 true/false
+
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (3, 3), 0)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)  # BGR을 HSV모드로 전환
@@ -58,20 +59,19 @@ while True:
         break
 
 
-
 # ----------------------------------------------------------------------------------------------------
     if k == ord('a'):  # 동서남북 검출
         print("********** 동서남북 검출 **********")
         ret, mask_black = cv2.threshold(blur, 90, 255, cv2.THRESH_BINARY_INV)  # 이진화
-
-        res_ewsn = mode_ewsn(mask_black)
+        cv2.imshow("frame1", frame)
+        res_ewsn = mode_ewsn(mask_black, frame)
 
     # --------------------------------------------------
-    elif k == ord('b'):  # 화살표 검출
+    if k == ord('b'):  # 화살표 검출
         print("********** 화살표 검출 **********")
+        cv2.imshow("framee", frame)
         ret, mask_black = cv2.threshold(blur, 90, 255, cv2.THRESH_BINARY_INV)  # 이진화
-
-        res_arrow = mode_arrow(mask_black)
+        res_arrow = mode_arrow(mask_black, frame)
 
     # --------------------------------------------------
     elif k == ord('c'):  # 알파벳색상 검출
@@ -126,9 +126,6 @@ while True:
     # --------------------------------------------------
     elif k == ord('h'):  # 라인트레이싱
         print("********** 라인트레이싱 **********")
-        mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)  # 노랑최소최대값을 이용해서 maskyellow값지정
-
-        res_line = mode_linetracer(mask_yellow)
 
     # --------------------------------------------------
     elif k == ord('i'):  # 우유곽 x좌표 찾기

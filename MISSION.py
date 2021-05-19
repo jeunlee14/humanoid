@@ -1,3 +1,5 @@
+import cv2
+
 def mode_area_color(mask_green):
     areaColor = 129
 
@@ -121,3 +123,4 @@ def mode_mission_escape(binary_area, binary_milk):
 
     print("안전구역미션수행결과 :", mission)
     return mission
+
