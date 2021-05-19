@@ -7,11 +7,10 @@ def mode_ewsn(binary, frame):
     # 모폴로지 연산(열림연산) 후 컨투어
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     binary_ero = cv2.erode(binary, kernel)  #검은색 팽창연산
-    #cv2.imshow("binary_ero", binary_ero)
+    cv2.imshow("binary_ero", binary_ero)
     contours, _ = cv2.findContours(binary_ero, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     #cv2.drawContours(frame, contours, -1, (255, 255, 0), -1) # 배경제거 전 컨투어
     #cv2.imshow("frame", frame)
-
 
     # 컨투어된 영역중에서 제일 큰 부분만 선택 (배경 제거)
     max_contour = None

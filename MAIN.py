@@ -126,6 +126,9 @@ while True:
     # --------------------------------------------------
     elif k == ord('h'):  # 라인트레이싱
         print("********** 라인트레이싱 **********")
+        mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)  # 노랑최소최대값을 이용해서 maskyellow값지정
+
+        res_line = mode_linetracer(mask_yellow, frame)
 
     # --------------------------------------------------
     elif k == ord('i'):  # 우유곽 x좌표 찾기

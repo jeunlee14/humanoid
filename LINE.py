@@ -1,7 +1,8 @@
 import cv2
 
 def mode_linetracer(binary_line, frame):
-    line = 129
+    line =''
+    add = ''
 
     pixels = cv2.countNonZero(binary_line)
     # print('pixel = ', pixels)
@@ -56,48 +57,47 @@ def mode_linetracer(binary_line, frame):
         #print('lu = ', cv2.countNonZero(frame_lu), ', ld = ', cv2.countNonZero(frame_ld), ', ru = ',cv2.countNonZero(frame_ru), ', rd = ', cv2.countNonZero(frame_rd))
 
         if lu == 1 and ld == 1 and ru == 1 and rd == 1:  # 직선
-            print('라인 직선')
+            line = 'straight'
             if w < 170:
                 if x_center >= 480:  # 오른쪽
-                    line = 130
-                    print('왼쪽 옆으로 가기')
+
+                    add = 'To the left'
                 elif x_center >= 160:  # 직진
-                    line = 111
-                    print('직진')
+
+                    add = 'go!'
                 else:  # 왼쪽
-                    line = 128
-                    print('오른쪽 옆으로 가기')
+
+                    add = 'To the right!'
 
         elif lu == 1 and ld == 1 and ru == 1 and rd == 0:  # 우회전 코너
-            print('라인 우회전 코너')
+            line = 'Right turn corner'
             if x >= 480:  # 오른쪽
-                line = 130
-                #print('오른쪽')
+
+                print('오른쪽')
             elif x >= 160:
                 if y >= 240:  # 코너
-                    line = 126
-                    #print('코너')
+
+                    print('코너')
                 else:  # 직진
-                    line = 111
-                    #print('직진')
+
+                    print('직진')
             else:  # 왼쪽
-                line = 128
+
                 print('왼쪽')
 
         elif lu == 1 and ld == 0 and ru == 1 and rd == 1:  # 좌회전 코너
-            print('라인 좌회전 코너')
+            line = 'Left turn corner'
             if (x + w) >= 480:  # 오른쪽
-                line = 130
-                #print('오른쪽')
+
+                print('오른쪽')
             elif (x + w) >= 160:
                 if y >= 240:  # 코너
-                    line = 126
-                    #print('좌회전 코너')
+
+                    print('좌회전 코너')
                 else:  # 직진
-                    line = 111
-                    #print('직진')
-            else:  # 왼쪽
-                line = 128
+
+                    print('직진')
+            else:   #왼쪽
                 print('왼쪽')
 
         elif lu == 1 and ld == 1 and ru == 0 and rd == 0:  # 우회전 문 앞
@@ -108,27 +108,27 @@ def mode_linetracer(binary_line, frame):
             elif x >= 160:
                 frame_door = binary_line_dil[280:480, x + w - 40:x + w]
                 if cv2.countNonZero(frame_door) >= 100:  # 문 앞
-                    line = 112
+
                     print('문 앞')
                 else:  # 직진
-                    line = 111
+
                     print('직진')
             else:  # 왼쪽
-                line = 128
+
                 print('왼쪽')
 
         elif lu == 0 and ld == 0 and ru == 1 and rd == 1:  # 좌회전 문 앞
             print('라인 좌회전 문 앞')
             if (x + w) >= 480:  # 오른쪽
-                line = 130
+
                 print('오른쪽')
             elif (x + w) >= 160:
                 frame_door = binary_line_dil[280:480, x:x + 40]
                 if cv2.countNonZero(frame_door) >= 100:  # 문 앞
-                    line = 112
+
                     print('문 앞')
                 else:  # 직진
-                    line = 111
+
                     print('직진')
             else:  # 왼쪽
                 line = 128
@@ -136,42 +136,45 @@ def mode_linetracer(binary_line, frame):
 
         elif (lu == 0 and ld == 1 and ru == 1 and rd == 0) or (lu == 0 and ld == 1 and ru == 1 and rd == 1) \
                 or (lu == 0 and ld == 1 and ru == 0 and rd == 0):  # 오른쪽으로 기울어진 경우
-            print('오른쪽으로 기울어진 경우')
+            line = 'Tilted to the right'
             if not (w >= 600 and h < 320):
                 if x >= 480:  # 오른쪽
-                    line = 130
-                    #print('오른쪽')
+
+                    print('오른쪽')
                 elif x >= 160:  # 오른쪽턴10
-                    line = 119
-                    #print('오른쪽턴10')
+
+                    print('오른쪽턴10')
                 else:  # 왼쪽
-                    line = 128
-                    #print('왼쪽')
+
+                    print('왼쪽')
 
         elif (lu == 1 and ld == 0 and ru == 0 and rd == 1) or (lu == 1 and ld == 1 and ru == 0 and rd == 1) \
                 or (lu == 0 and ld == 0 and ru == 0 and rd == 1):  # 왼쪽으로 기울어진 경우
-            print('왼쪽으로 기울어진 경우')
+            line = 'Tilted to the left'
             if not (w >= 600 and h < 320):
                 if (x + w) >= 480:  # 오른쪽
-                    line = 130
-                    #print('오른쪽')
+
+                    print('오른쪽')
                 elif (x + w) >= 160:  # 왼쪽턴10
-                    line = 125
-                    #print('왼쪽턴10')
+
+                    print('왼쪽턴10')
                 else:  # 왼쪽
-                    line = 128
-                    #print('왼쪽')
+
+                    print('왼쪽')
 
         elif lu == 1 and ld == 0 and ru == 0 and rd == 0:  # 오른쪽으로 기울어진 코너
-            print('오른쪽으로 기울어진 코너')
-            line = 119
+            line = 'Corner tilted to the right'
+
             #print('오른쪽턴10')
 
         elif lu == 0 and ld == 0 and ru == 1 and rd == 0:  # 왼쪽으로 기울어진 코너
-            print('왼쪽으로 기울어진 코너')
-            line = 125
-            #print('왼쪽턴10')
+            line = 'Corner tilted to the left'
+
+            #print('왼쪽턴10')h
 
     #print('line = ', line)
+    cv2.putText(frame, str(line), (100, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 0), 1)
+    cv2.putText(frame, str(add) , (100, 120), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 0), 1)
+
     cv2.imshow('line', frame)
     return line
