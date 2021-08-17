@@ -203,8 +203,8 @@ def mode_linetracer(binary_line, frame):
 if __name__ == '__main__':
 
     cnt = 63
-    for i in os.listdir('C:/line/straight/'): #C:/line/straight/
-        path = 'C:/line/straight/' + i
+    for i in os.listdir('D:\line'): #C:/line/straight/
+        path = 'D:/line' + i
         #print("i=", i)
 
         line_image = cv2.imread(path, cv2.IMREAD_COLOR)
@@ -216,7 +216,7 @@ if __name__ == '__main__':
         # cv2.imshow("origin", blur)
         # cv2.imshow("mask_yellow", mask_yellow)
 
-        name = 'C:/line/res/res' + str(cnt) + '.jpg'
+        name = 'D:/line/res' + str(cnt) + '.jpg'
         print(name)
         cv2.imwrite(name, res_line)
         cnt += 1
