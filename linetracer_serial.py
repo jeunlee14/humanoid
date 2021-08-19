@@ -6,6 +6,7 @@ import timeit
 import serial
 import capture
 
+print(cv2.__version__)
 
 serial_use = 1
 
@@ -18,21 +19,19 @@ W_View_size = 320
 H_View_size = 240
 FPS = 90  # PI CAMERA: 320 x 240 = MAX 90
 
-
-lower_yellow = np.array([0, 58, 50])
-upper_yellow = np.array([255, 180, 116])
+lower_yellow = np.array([10, 100, 20])
+upper_yellow = np.array([30, 255, 255])
 
 
 def mode_linetracer(blur):
-
     res = 129
 
-    YCrCb = cv2.cvtColor(blur, cv2.COLOR_BGR2YCR_CB)
-    mask_yellow = cv2.inRange(YCrCb, lower_yellow, upper_yellow)
+    hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
+    mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
     pixels = cv2.countNonZero(mask_yellow)
 
-    if pixels < 5000:
+    if pixels < 2000:
         return res
 
     kernel = np.ones((5, 5), np.uint8)
@@ -59,32 +58,33 @@ def mode_linetracer(blur):
     (x, y), (w, h), ang = yellowbox
 
     if w > h:
-        ang = ang - 90
+        ang = ang + 90
 
     ang = int(ang)
     box = cv2.boxPoints(yellowbox)
     box = np.int0(box)
 
     print('w= {}, h={}'.format(w, h))
+    print('x= {}, y={}'.format(x, y))
 
     for i in box:
         cv2.circle(blur, (i[0], i[1]), 3, (255, 255, 255), 10)
 
-        if h < 50 or w < 50:  # 직선
+        if h < 52 or w < 52:  # 직선
             line = 'straight '
 
-            if 0 <= abs(ang) <= 5:
+            if 0 <= abs(ang) <= 10:
                 if x < 150:
                     line += 'go left'
                     res = 220
-                elif 150 <= x < 171:
+                elif 150 <= x < 200:
                     line += 'go'
                     res = 225
                 else:
                     line += 'go right'
                     res = 230
 
-            elif ang > 0:
+            '''elif ang > 0:
                 if ang < 15:
                     line += 'small right turn'
                     res = 235
@@ -98,11 +98,32 @@ def mode_linetracer(blur):
                     res = 240
                 else:
                     line += 'big left turn'
-                    res = 250
+                    res = 250'''
 
-        elif x >= 50:   # 코너
-            line = 100
-            #line = 'corner '
+        elif x >= 50:  # 코너
+            line = 'corner '
+            res = 100
+            # line = 'corner '
+
+            if 0 <= abs(ang) <= 10:
+                if w > 215:
+                    res += 10
+
+            elif ang > 0:
+                if ang < 15:
+                    line += 'small right turn'
+                    res += 35
+                else:
+                    line += 'big right turn'
+                    res += 45
+
+            else:
+                if ang > -15:
+                    line += 'small left turn'
+                    res += 40
+                else:
+                    line += 'big left turn'
+                    res += 50
 
     print('line = {}, angle = {}'.format(line, ang))
     print()
@@ -114,6 +135,7 @@ def mode_linetracer(blur):
     # cv2.line(image, (int(x_min), 150), (int(x_min), 102), (255, 0, 0), 3)
 
     return res
+
 
 # ----------------------------------------------------------------------------------------------------
 def TX_data_py2(ser, one_byte):  # one_byte= 0~255
@@ -158,7 +180,7 @@ try:
     cap.set(3, W_View_size)
     cap.set(4, H_View_size)
     cap.set(5, FPS)
-    ftp = capture.FtpClient(ip_address="192.168.0.3", user="Jeun", passwd="4140")
+    ftp = capture.FtpClient(ip_address="192.168.0.5", user="Jeun", passwd="4140")
 
 except:
     print('cannot load camera!')
@@ -193,3 +215,4 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+

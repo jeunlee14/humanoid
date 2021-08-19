@@ -16,7 +16,7 @@ def mode_linetracer(blur):
     pixels = cv2.countNonZero(mask_yellow)
     print(pixels)
 
-    if pixels < 3000:
+    if pixels < 2000:
         return res
 
     kernel = np.ones((5, 5), np.uint8)
@@ -42,21 +42,22 @@ def mode_linetracer(blur):
     yellowbox = cv2.minAreaRect(max_contour)
     (x, y), (w, h), ang = yellowbox
 
-    ang += 45
+    if w > h:
+        ang = ang + 90
 
     ang = int(ang)
     box = cv2.boxPoints(yellowbox)
     box = np.int0(box)
 
     print('w= {}, h={}'.format(w, h))
-
+    print('x= {}, y={}'.format(x, y))
     for i in box:
         cv2.circle(blur, (i[0], i[1]), 3, (255, 255, 255), 10)
 
-        if h < 50 or w < 50:  # 직선
+        if h < 52 or w < 52:  # 직선
             line = 'straight '
 
-            if 0 <= abs(ang) <= 5:
+            if 0 <= abs(ang) <= 10:
                 if x < 150:
                     line += 'go left'
                     res = 220
@@ -66,6 +67,31 @@ def mode_linetracer(blur):
                 else:
                     line += 'go right'
                     res = 230
+
+            '''elif ang > 0:
+                if ang < 15:
+                    line += 'small right turn'
+                    res = 235
+                else:
+                    line += 'big right turn'
+                    res = 245
+
+            else:
+                if ang > -15:
+                    line += 'small left turn'
+                    res = 240
+                else:
+                    line += 'big left turn'
+                    res = 250'''
+
+        elif x >= 50:   # 코너
+            res = 100
+            line = 'corner'
+
+            #line = 'corner '
+
+            if 0 <= abs(ang) <= 10:
+                res = 100
 
             elif ang > 0:
                 if ang < 15:
@@ -83,9 +109,6 @@ def mode_linetracer(blur):
                     line += 'big left turn'
                     res = 250
 
-        elif x >= 50:   # 코너
-            line = 100
-            #line = 'corner '
 
     print('line = {}, angle = {}'.format(line, ang))
     print()
@@ -101,8 +124,8 @@ def mode_linetracer(blur):
 
 if __name__ == '__main__':
 
-    for i in os.listdir('D:/line/'):  # C:/line/straight/
-        path = 'D:/line/' + i
+    for i in os.listdir('D:/corner/'):  # C:/line/straight/
+        path = 'D:/corner/' + i
         # print("i=", i)
 
         image = cv2.imread(path, cv2.IMREAD_COLOR)
