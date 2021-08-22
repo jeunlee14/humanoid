@@ -105,25 +105,36 @@ def mode_linetracer(blur):
             res = 100
             # line = 'corner '
 
-            if 0 <= abs(ang) <= 10:
-                if w > 215:
-                    res += 10
+            if x < 150:
+                line += 'go left'
+                res += 25
+            elif 150 <= x < 200:
+                line += 'go'
 
-            elif ang > 0:
-                if ang < 15:
-                    line += 'small right turn'
-                    res += 35
+                if 0 <= abs(ang) <= 10:
+                    if w > 215:
+                        res += 10
+
+                elif ang > 0:
+                    if ang < 15:
+                        line += 'small right turn'
+                        res += 35
+                    else:
+                        line += 'big right turn'
+                        res += 45
+
                 else:
-                    line += 'big right turn'
-                    res += 45
-
+                    if ang > -15:
+                        line += 'small left turn'
+                        res += 40
+                    else:
+                        line += 'big left turn'
+                        res += 50
             else:
-                if ang > -15:
-                    line += 'small left turn'
-                    res += 40
-                else:
-                    line += 'big left turn'
-                    res += 50
+                line += 'go right'
+                res += 30
+
+
 
     print('line = {}, angle = {}'.format(line, ang))
     print()
