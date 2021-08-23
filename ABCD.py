@@ -4,10 +4,10 @@ import numpy as np
 import sys
 import math
 import timeit
-import serial
+#import serial
 
 import time
-import capture
+#import capture
 
 serial_use = 1
 
