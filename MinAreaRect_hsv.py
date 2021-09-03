@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import os
 
-print(cv2.__version__)
 lower_yellow = np.array([10, 50, 80])
 upper_yellow = np.array([30, 255, 255])
 
@@ -57,11 +56,19 @@ def mode_linetracer(blur):
         if h < 52 or w < 52:  # 직선
             line = 'straight '
 
-            if 0 <= abs(ang) <= 10:
+            if abs(ang) > 4 :
+                if ang > 0:
+                    line += 'small right turn'
+                    res = 235
+                else:
+                    line += 'small right turn'
+                    res = 235
+
+            else :
                 if x < 150:
                     line += 'go left'
-                    res = 220
                 elif 150 <= x < 171:
+                    res = 220
                     line += 'go'
                     res = 225
                 else:
@@ -88,10 +95,27 @@ def mode_linetracer(blur):
             res = 100
             line = 'corner'
 
-            #line = 'corner '
+            if 85 < abs(ang) < 90 :
+                #if w > 215:
+                #   res += 10
+                line += 'go'
+                res += 10
 
-            if 0 <= abs(ang) <= 10:
-                res = 100
+            elif ang > 0:
+                if ang < 15:
+                    line += 'small right turn'
+                    res += 35
+                else:
+                    line += 'big right turn'
+                    res += 45
+
+            else:
+                if ang > -15:
+                    line += 'small left turn'
+                    res += 40
+                else:
+                    line += 'big left turn'
+                    res += 50
 
             # elif ang > 0:
             #     if ang < 15:

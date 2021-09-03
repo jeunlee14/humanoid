@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 lower_yellow = np.array([0, 58, 50])
-upper_yellow = np.array([255, 180, 116])
+upper_yellow = np.array([255, 180, 122])
 
 def mode_linetracer(blur):
     line = 'error'
@@ -84,8 +84,38 @@ def mode_linetracer(blur):
                     res = 250
 
         elif x >= 50:   # 코너
-            line = 100
-            #line = 'corner '
+            line = 'corner '
+            res = 100
+            # line = 'corner '
+
+            if x < 150:
+                line += 'go left'
+                res += 25
+            elif 150 <= x < 200:
+                line += 'go'
+
+                if 0 <= abs(ang) <= 10:
+                    if w > 215:
+                        res += 10
+
+                elif ang > 0:
+                    if ang < 15:
+                        line += 'small right turn'
+                        res += 35
+                    else:
+                        line += 'big right turn'
+                        res += 45
+
+                else:
+                    if ang > -15:
+                        line += 'small left turn'
+                        res += 40
+                    else:
+                        line += 'big left turn'
+                        res += 50
+            else:
+                line += 'go right'
+                res += 30
 
     print('line = {}, angle = {}'.format(line, ang))
     print()

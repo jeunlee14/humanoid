@@ -96,20 +96,20 @@ def mode_abcd(binary_mask):
     return abcd  # D B          A C
 
 
-def mode_area_color(mask_green):
-    areaColor = 129
+def mode_alpha_color(mask_blue):
+    color = 129
 
-    pixels = cv2.countNonZero(mask_green)
+    pixels = cv2.countNonZero(mask_blue)
 
-    if pixels > 10000:
-        areaColor = 130  # 초록
-        print('green')
+    if pixels > 500:
+        color = 128  # 파랑
+        print('blue')
     else:
-        areaColor = 128  # 검정
-        print('black')
+        color = 130  # 빨강
+        print('red')
 
-    print("영역색상 :", areaColor)
-    return areaColor
+    print("알파벳색상 :", color)
+    return color
 
 
 def mode_milk_save(binary_area):

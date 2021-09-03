@@ -23,7 +23,7 @@ def setting_bar():
 
 
 if __name__ == '__main__':
-    image = cv2.imread('D:/data/20210817-18-33-30.222961.jpg', cv2.IMREAD_COLOR)
+    image = cv2.imread('D:/line2/20210903-16-04-30.699484.jpg', cv2.IMREAD_COLOR)
     frame = cv2.GaussianBlur(image, (3, 3), 0)
 
     setting_bar()

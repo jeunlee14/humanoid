@@ -84,7 +84,7 @@ def mode_linetracer(blur):
                     line += 'go right'
                     res = 230
 
-            '''elif ang > 0:
+            elif ang > 0:
                 if ang < 15:
                     line += 'small right turn'
                     res = 235
@@ -98,7 +98,7 @@ def mode_linetracer(blur):
                     res = 240
                 else:
                     line += 'big left turn'
-                    res = 250'''
+                    res = 250
 
         elif x >= 50:  # 코너
             line = 'corner '

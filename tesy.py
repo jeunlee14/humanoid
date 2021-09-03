@@ -16,10 +16,17 @@ Read_RX = 0
 receiving_exit = 1
 threading_Time = 0.01
 
-lower_red = np.array([150, 50, 15])
-upper_red = np.array([180, 255, 255])
-lower_blue = np.array([90, 70, 40])
-upper_blue = np.array([120, 255, 255])
+# YCbCr
+lower_red = np.array([0, 155, 0])
+upper_red = np.array([255, 255, 255])
+lower_blue = np.array([0, 0, 152])
+upper_blue = np.array([255, 255, 255])
+
+# HSV
+# lower_red = np.array([150, 50, 15])
+# upper_red = np.array([180, 255, 255])
+# lower_blue = np.array([90, 70, 40])
+# upper_blue = np.array([120, 255, 255])
 lower_green = np.array([50, 60, 30])
 upper_green = np.array([80, 255, 255])
 lower_yellow = np.array([10, 100, 20])
@@ -219,11 +226,9 @@ def mode_ypos(binary_milk):
 
 # ----------------------------------------------------------------------------------------------------
 
-def mode_linetracer(blur):
-    res = 129
 
-    hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
-    mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)
+def mode_linetracer(mask_yellow):
+    res = 129
 
     pixels = cv2.countNonZero(mask_yellow)
 
@@ -280,46 +285,55 @@ def mode_linetracer(blur):
                     line += 'go right'
                     res = 230
 
-            '''elif ang > 0:
-                if ang < 15:
-                    line += 'small right turn'
-                    res = 235
-                else:
-                    line += 'big right turn'
-                    res = 245
-
-            else:
-                if ang > -15:
-                    line += 'small left turn'
-                    res = 240
-                else:
-                    line += 'big left turn'
-                    res = 250'''
+            # elif ang > 0:
+            #     if ang < 15:
+            #         line += 'small right turn'
+            #         res = 235
+            #     else:
+            #         line += 'big right turn'
+            #         res = 245
+            #
+            # else:
+            #     if ang > -15:
+            #         line += 'small left turn'
+            #         res = 240
+            #     else:
+            #         line += 'big left turn'
+            #         res = 250
 
         elif x >= 50:  # 코너
             line = 'corner '
             res = 100
             # line = 'corner '
 
-            if 0 <= abs(ang) <= 10:
-                if w > 215:
-                    res += 10
+            if x < 150:
+                line += 'go left'
+                res += 25
+            elif 150 <= x < 200:
+                line += 'go'
 
-            elif ang > 0:
-                if ang < 15:
-                    line += 'small right turn'
-                    res += 35
+                if 0 <= abs(ang) <= 10:
+                    if w > 215:
+                        res += 10
+
+                elif ang > 0:
+                    if ang < 15:
+                        line += 'small right turn'
+                        res += 35
+                    else:
+                        line += 'big right turn'
+                        res += 45
+
                 else:
-                    line += 'big right turn'
-                    res += 45
-
+                    if ang > -15:
+                        line += 'small left turn'
+                        res += 40
+                    else:
+                        line += 'big left turn'
+                        res += 50
             else:
-                if ang > -15:
-                    line += 'small left turn'
-                    res += 40
-                else:
-                    line += 'big left turn'
-                    res += 50
+                line += 'go right'
+                res += 30
 
     print('line = {}, angle = {}'.format(line, ang))
     print()
@@ -333,17 +347,23 @@ def mode_linetracer(blur):
     return res
 
 
-
 # ----------------------------------------------------------------------------------------------------
 def mode_ewsn(binary):
     ewsn = 129
 
+    cv2.imshow("ewsn", binary)
     # 모폴로지 연산(열림연산) 후 컨투어
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     binary_ero = cv2.erode(binary, kernel)
     contours, _ = cv2.findContours(binary_ero, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if len(contours) == 0:
+        return ewsn
+
+    pixels = cv2.countNonZero(binary)
+    print(pixels)
+
+    if pixels < 5000:
         return ewsn
 
     # 컨투어된 영역중에서 제일 큰 부분만 선택 (배경 제거)
@@ -362,8 +382,6 @@ def mode_ewsn(binary):
     vertices = len(approx)
     # 사각형으로 컨투어
     x, y, w, h = cv2.boundingRect(max_contour)
-
-    cv2.imshow("ewsn", max_contour)
 
     # imshow("ewsn", max_contour)
     if vertices < 8:
@@ -459,10 +477,16 @@ def mode_alpha_color(mask_blue):
 def mode_abcd(binary_mask):
     abcd = 129
 
+    # 모폴로지 열림연산
+    k = cv2.getStructuringElement(cv2.MORPH_OPEN, (5, 5))
+    opening = cv2.dilate(binary_mask, k)
+
     contours, hierarchy = cv2.findContours(binary_mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)  # 컨투어
 
     if len(contours) == 0:
         print("물체를 감지할 수 없습니다")
+        return abcd
+
     else:
         contr = contours[0]
         x, y, w, h = cv2.boundingRect(contr)
@@ -729,33 +753,33 @@ if __name__ == '__main__':
 
     # exit(1)
 
-W_View_size = 320
-H_View_size = 240
-FPS = 80  # PI CAMERA: 320 x 240 = MAX 90
+# ------------------------------------------------------------------------------------
+#####################################################################################
 
 try:
-    cap = cv2.VideoCapture(0)  # 카메라 켜기  # 카메라 캡쳐 (사진만 가져옴)
+    cap1 = cv2.VideoCapture(0)  # 카메라 켜기  # 카메라 캡쳐 (사진만 가져옴)
 
-    cap.set(3, W_View_size)
-    cap.set(4, H_View_size)
-    cap.set(5, FPS)
+    cap1.set(3, 320)
+    cap1.set(4, 240)
+    cap1.set(5, 80)
 
     # ftp = capture.FtpClient(ip_address="192.168.0.4", user="simkyuwon", passwd="Mil18-76061632")
-    ftp = capture.FtpClient(ip_address="192.168.0.9", user="Jeun", passwd="4140")
+    # ftp = capture.FtpClient(ip_address="192.168.0.9", user="Jeun", passwd="4140")
 
 except:
     print('cannot load camera!')
 
 while True:
     start_time = timeit.default_timer()  # 시작 시간 체크
-    ret, frame = cap.read()  # 무한루프를 돌려서 사진을 동영상으로 변경   # ret은 true/false
+    ret, frame1 = cap1.read()  # 무한루프를 돌려서 사진을 동영상으로 변경   # ret은 true/false
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray, (3, 3), 0)
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2YCrCb)  # BGR을 HSV모드로 전환
+    blur = cv2.GaussianBlur(frame1, (3, 3), 0)
+    gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
+    hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)  # BGR을 HSV모드로 전환
+    ycbcr = cv2.cvtColor(blur, cv2.COLOR_BGR2YCrCb)  # BGR을 YCbCr모드로 전환
 
     if ret:  # 사진 가져오는것을 성공할 경우
-        cv2.imshow('Original', frame)
+        cv2.imshow('Original1', frame1)
 
     else:
         print('cannot load camera!')
@@ -766,58 +790,53 @@ while True:
         break
 
     data = str(RX_data(serial_port))
-    print("Return DATA: " + data)
+    # print("Return DATA: " + data)
 
     # ----------------------------------------------------------------------------------------------------
 
-    # data = '204'
-    # ----------------------------------------------------------------------------------------------------
     if data == '201':  # 동서남북 검출
         print("\n********** 동서남북 검출 **********")
         print("Return DATA: " + data)
-        ret, mask_black = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)  # 이진화
-
-        ftp.store_image(mask_black)
-        ftp.store_image(blur)
+        ret, mask_black = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY_INV)  # 이진화
 
         res_ewsn = mode_ewsn(mask_black)
         TX_data_py2(serial_port, res_ewsn)
 
     # --------------------------------------------------
-    elif data == '202':  # 화살표 검출
+    if data == '203':  # 화살표 검출
         print("\n********** 화살표 검출 **********")
         print("Return DATA: " + data)
-        ret, mask_black = cv2.threshold(blur, 90, 255, cv2.THRESH_BINARY_INV)  # 이진화
+
+        ret, mask_black = cv2.threshold(gray, 90, 255, cv2.THRESH_BINARY_INV)  # 이진화
 
         res_arrow = mode_arrow(mask_black)
         TX_data_py2(serial_port, res_arrow)
 
     # --------------------------------------------------
-    elif data == '203':  # 알파벳색상 검출
+    elif data == '204':  # 알파벳색상 검출
         print("\n********** 알파벳색상 검출 **********")
         print("Return DATA: " + data)
-        mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
+        mask_blue = cv2.inRange(ycbcr, lower_blue, upper_blue)
 
         res_alphacolor = mode_alpha_color(mask_blue)
         TX_data_py2(serial_port, res_alphacolor)
 
     # --------------------------------------------------
-    elif data == '204':  # ABCD 검출
+    elif data == '205':  # ABCD 검출
         print("\n********** ABCD 검출 **********")
         print("Return DATA: " + data)
-        res_alphacolor = 128  # fsfsdfsdfsdfs#######################3
-        if res_alphacolor == 128:  # 파랑
-            mask_blueOrRed = cv2.inRange(hsv, lower_blue, upper_blue)
-        elif res_alphacolor == 130:  # 빨강
-            mask_blueOrRed = cv2.inRange(hsv, lower_red, upper_red)
+        res_alphacolor = 128  # 임시!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        ftp.store_image(frame)
-        ftp.store_image(mask_blueOrRed)
+        if res_alphacolor == 128:  # 파랑
+            mask_blueOrRed = cv2.inRange(ycbcr, lower_blue, upper_blue)
+        elif res_alphacolor == 130:  # 빨강
+            mask_blueOrRed = cv2.inRange(ycbcr, lower_red, upper_red)
+
         res_abcd = mode_abcd(mask_blueOrRed)
         TX_data_py2(serial_port, res_abcd)
 
     # --------------------------------------------------
-    elif data == '205':  # 구역색상 검출
+    elif data == '206':  # 구역색상 검출
         print("\n********** 구역색상 검출 **********")
         print("Return DATA: " + data)
         mask_green = cv2.inRange(hsv, lower_green, upper_green)
@@ -830,9 +849,11 @@ while True:
     elif data == '210':  # 라인트레이싱
         print("\n********** 라인트레이싱 **********")
         print("Return DATA: " + data)
-        #ftp.store_image(blur)
+        # ftp.store_image(blur)
+        mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
-        res_line = mode_linetracer(blur)
+        res_line = mode_linetracer(mask_yellow)
+        print("Send DATA: ", res_line)
         TX_data_py2(serial_port, res_line)
 
     # --------------------------------------------------
@@ -858,7 +879,7 @@ while True:
         # res_alphacolor = 128  ###############################################################임시!!!!
         print("\n********** 확진구역미션수행 확인 **********")
         print("Return DATA: " + data)
-        ret, mask_black = cv2.threshold(blur, 30, 255, cv2.THRESH_BINARY_INV)  # 이진화
+        ret, mask_black = cv2.threshold(gray, 30, 255, cv2.THRESH_BINARY_INV)  # 이진화
 
         if res_alphacolor == 128:
             mask_blueOrRed = cv2.inRange(hsv, lower_blue, upper_blue)
@@ -869,25 +890,14 @@ while True:
         TX_data_py2(serial_port, res_mission)
 
     # --------------------------------------------------
-    elif data == '210':  # 라인트레이싱
-        print("\n********** 라인트레이싱 **********")
-        print("Return DATA: " + data)
-        mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)  # 노랑최소최대값을 이용해서 maskyellow값지정
-        ftp.store_image(frame)
-        time.sleep(1)
-
-        res_line = mode_linetracer(mask_yellow)
-        TX_data_py2(serial_port, res_line)
-
-    # --------------------------------------------------
     elif data == '207':  # 우유곽 x좌표 찾기
         res_alphacolor = 128  ###############################################################임시!!!!
         print("\n********** 우유곽 x좌표 찾기 **********")
         print("Return DATA: " + data)
         if res_alphacolor == 128:
-            mask_blueOrRed = cv2.inRange(hsv, lower_blue, upper_blue)
+            mask_blueOrRed = cv2.inRange(ycbcr, lower_blue, upper_blue)
         elif res_alphacolor == 130:
-            mask_blueOrRed = cv2.inRange(hsv, lower_red, upper_red)
+            mask_blueOrRed = cv2.inRange(ycbcr, lower_red, upper_red)
 
         res_xpos = mode_xpos(mask_blueOrRed)
         TX_data_py2(serial_port, res_xpos)
@@ -898,9 +908,9 @@ while True:
         print("\n********** 우유곽 y좌표 찾기 **********")
         print("Return DATA: " + data)
         if res_alphacolor == 128:
-            mask_blueOrRed = cv2.inRange(hsv, lower_blue, upper_blue)
+            mask_blueOrRed = cv2.inRange(ycbcr, lower_blue, upper_blue)
         elif res_alphacolor == 130:
-            mask_blueOrRed = cv2.inRange(hsv, lower_red, upper_red)
+            mask_blueOrRed = cv2.inRange(ycbcr, lower_red, upper_red)
 
         res_ypos = mode_ypos(mask_blueOrRed)
         TX_data_py2(serial_port, res_ypos)
@@ -918,7 +928,7 @@ while True:
     elif data == '218':  # 확진구역에서 나가기
         print("\n********** 확진구역에서 나가기 **********")
         print("Return DATA: " + data)
-        ret, mask_black = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY_INV)  # 이진화
+        ret, mask_black = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY_INV)  # 이진화
 
         res_escape = mode_milk_escape(mask_black)
         TX_data_py2(serial_port, res_escape)
@@ -935,5 +945,5 @@ while True:
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-cap.release()
+cap1.release()
 cv2.destroyAllWindows()
