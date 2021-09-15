@@ -50,8 +50,12 @@ def mode_linetracer(blur):
 
     print('w= {}, h={}'.format(w, h))
     print('x= {}, y={}'.format(x, y))
+    print('x-w/2 ={}, y-h/2={}'.format(x-w/2, y-h/2))
+
+    cv2.circle(blur, (int(x), int(y)), 3, (255, 0, 0), 10)
+    cv2.circle(blur, (int(x-w/2), int(y-h/2)), 3, (0, 0, 255), 10)
     for i in box:
-        cv2.circle(blur, (i[0], i[1]), 3, (255, 255, 255), 10)
+        # cv2.circle(blur, (i[0], i[1]), 3, (255, 255, 255), 10)
 
         if h < 52 or w < 52:  # 직선
             line = 'straight '
@@ -148,8 +152,8 @@ def mode_linetracer(blur):
 
 if __name__ == '__main__':
 
-    for i in os.listdir('D:/corner/'):  # C:/line/straight/
-        path = 'D:/corner/' + i
+    for i in os.listdir('D:/line_20/'):  # C:/line/straight/
+        path = 'D:/line_20/' + i
         # print("i=", i)
 
         image = cv2.imread(path, cv2.IMREAD_COLOR)

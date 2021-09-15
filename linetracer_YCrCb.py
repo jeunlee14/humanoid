@@ -2,54 +2,164 @@ import cv2
 import numpy as np
 import os
 
-def onChange(x):
-    pass
+lower_yellow = np.array([0, 133, 0])
+upper_yellow = np.array([255, 255, 122])
 
-def setting_bar():
-    cv2.namedWindow('YCrCb')
 
-    cv2.createTrackbar('Y_MAX', 'YCrCb', 0, 255, onChange)
-    cv2.createTrackbar('Y_MIN', 'YCrCb', 0, 255, onChange)
-    cv2.createTrackbar('Cr_MAX', 'YCrCb', 0, 255, onChange)
-    cv2.createTrackbar('Cr_MIN', 'YCrCb', 0, 255, onChange)
-    cv2.createTrackbar('Cb_MAX', 'YCrCb', 0, 255, onChange)
-    cv2.createTrackbar('Cb_MIN', 'YCrCb', 0, 255, onChange)
-    cv2.setTrackbarPos('Y_MAX', 'YCrCb', 255)
-    cv2.setTrackbarPos('Y_MIN', 'YCrCb', 0)
-    cv2.setTrackbarPos('Cr_MAX', 'YCrCb', 255)
-    cv2.setTrackbarPos('Cr_MIN', 'YCrCb', 0)
-    cv2.setTrackbarPos('Cb_MAX', 'YCrCb', 255)
-    cv2.setTrackbarPos('Cb_MIN', 'YCrCb', 0)
+def mode_linetracer(blur):
+    line = 'error'
+    res = 129
 
+    ycbcr = cv2.cvtColor(blur, cv2.COLOR_BGR2YCrCb)
+    mask_yellow = cv2.inRange(ycbcr, lower_yellow, upper_yellow)
+
+    pixels = cv2.countNonZero(mask_yellow)
+    print(pixels)
+
+    if pixels < 2000:
+        return res
+
+    kernel = np.ones((5, 5), np.uint8)
+    binary_line_dil = cv2.dilate(mask_yellow, kernel, iterations=2)
+
+    cv2.imshow('binary_line_mor', binary_line_dil)
+
+    contours, hierarchy = cv2.findContours(binary_line_dil, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    # 컨투어된 영역중에서 제일 큰 부분만 선택 (배경 제거)
+    max_contour = None
+    max_area = -1
+
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area > max_area:
+            max_area = area
+            max_contour = contour
+
+    if len(max_contour) <= 0:
+        return res
+
+    yellowbox = cv2.minAreaRect(max_contour)
+    (x, y), (w, h), ang = yellowbox
+
+    if w > h:
+        ang = ang + 90
+
+    ang = int(ang)
+    box = cv2.boxPoints(yellowbox)
+    box = np.int0(box)
+
+    print('w= {}, h={}'.format(w, h))
+    print('x= {}, y={}'.format(x, y))
+    print('x-w/2 ={}, y-h/2={}'.format(x-w/2, y-h/2))
+
+    cv2.circle(blur, (int(x), int(y)), 3, (255, 0, 0), 10)
+    cv2.circle(blur, (int(x-w/2), int(y-h/2)), 3, (0, 0, 255), 10)
+    for i in box:
+        # cv2.circle(blur, (i[0], i[1]), 3, (255, 255, 255), 10)
+
+        if h < 55 or w < 55:  # 직선
+            line = 'straight '
+
+            if abs(ang) > 4 :
+                if ang > 0:
+                    line += 'small right turn'
+                    res = 235
+                else:
+                    line += 'small left turn'
+                    res = 240
+
+            else :
+                if x < 120:
+                    line += 'go left'
+                elif 120 <= x < 200:
+                    res = 220
+                    line += 'go'
+                    res = 225
+                else:
+                    line += 'go right'
+                    res = 230
+
+            '''elif ang > 0:
+                if ang < 15:
+                    line += 'small right turn'
+                    res = 235
+                else:
+                    line += 'big right turn'
+                    res = 245
+
+            else:
+                if ang > -15:
+                    line += 'small left turn'
+                    res = 240
+                else:
+                    line += 'big left turn'
+                    res = 250'''
+
+        else : # x >= 50:   # 코너
+            res = 100
+            line = 'corner'
+
+            if 85 < abs(ang) < 95 or abs(ang) < 5 :
+                #if w > 215:
+                #   res += 10
+                # line += 'go'
+                # res += 10
+                if x-w/2 < 160 :
+                    line += 'left corner'
+                    res = 150
+                else:
+                    line += 'right corner'
+                    res = 145
+
+            elif ang > 0:
+                line += 'small right turn'
+                res += 35
+
+                # if ang < 15:
+                #     line += 'small right turn'
+                #     res += 35
+                # else:
+                #     line += 'big right turn'
+                #     res += 45
+
+            else:
+                line += 'small left turn'
+                res += 40
+
+                # if ang > -15:
+                #     line += 'small left turn'
+                #     res += 40
+                # else:
+                #     line += 'big left turn'
+                #     res += 50
+
+
+    print('line = {}, angle = {}'.format(line, ang))
+    print()
+
+
+    cv2.drawContours(blur, [box], 0, (0, 0, 255), 3)
+    cv2.putText(blur, str(ang), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    # cv2.putText(blur, str(error), (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
+    # cv2.line(image, (int(x_min), 150), (int(x_min), 102), (255, 0, 0), 3)
+
+    cv2.imshow('blur', blur)
+    return res
 
 if __name__ == '__main__':
-    image = cv2.imread('D:/line2/20210903-16-04-30.699484.jpg', cv2.IMREAD_COLOR)
-    frame = cv2.GaussianBlur(image, (3, 3), 0)
 
-    setting_bar()
-    while True:
-        Y_MAX = cv2.getTrackbarPos('Y_MAX', 'YCrCb')
-        Y_MIN = cv2.getTrackbarPos('Y_MIN', 'YCrCb')
-        Cr_MAX = cv2.getTrackbarPos('Cr_MAX', 'YCrCb')
-        Cr_MIN = cv2.getTrackbarPos('Cr_MIN', 'YCrCb')
-        Cb_MAX = cv2.getTrackbarPos('Cb_MAX', 'YCrCb')
-        Cb_MIN = cv2.getTrackbarPos('Cb_MIN', 'YCrCb')
+    for i in os.listdir('D:/line_20/'):  # C:/line/straight/
+        path = 'D:/line_20/' + i
+        # print("i=", i)
 
-        lower = np.array([Y_MIN, Cr_MIN, Cb_MIN])
-        higher = np.array([Y_MAX, Cr_MAX, Cb_MAX])
+        image = cv2.imread(path, cv2.IMREAD_COLOR)
+        print(i)
+        blur = cv2.GaussianBlur(image, (3, 3), 0)
 
-        YCrCb = cv2.cvtColor(frame, cv2.COLOR_BGR2YCR_CB)
-        Gmask = cv2.inRange(YCrCb, lower, higher)
+        # 함수 호출
+        mode_linetracer(blur)
 
-        G = cv2.bitwise_and(frame, frame, mask=Gmask)
-
-        cv2.imshow('YCrCb', G)
-
-        k = cv2.waitKey(1) & 0xFF
+        k = cv2.waitKey(0)
         if k == 27:
             break
-
-
-
-
-

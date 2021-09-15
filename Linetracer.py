@@ -191,9 +191,9 @@ def mode_linetracer(binary_line, frame):
     #cv2.putText(frame, str(line), (100, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 0), 1)
     #cv2.putText(frame, str(add) , (100, 120), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 0), 1)
     #cv2.putText(frame, str(' x,  w,  y,  h'), (120, 20), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 1)
-    cv2.putText(frame, str((x, w, y, h)), (70,100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 1)
-    cv2.putText(frame, str((x_center, y_center)), (90, 130), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 1)
-    cv2.putText(frame, str((lu, ld, ru, rd)), (100, 160), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 1)
+    #cv2.putText(frame, str((x, w, y, h)), (70,100), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 1)
+    #cv2.putText(frame, str((x_center, y_center)), (90, 130), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 1)
+    #cv2.putText(frame, str((lu, ld, ru, rd)), (100, 160), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 1)
 
     cv2.imshow('line', frame)
 
@@ -203,11 +203,12 @@ def mode_linetracer(binary_line, frame):
 if __name__ == '__main__':
 
     cnt = 63
-    for i in os.listdir('D:\line'): #C:/line/straight/
-        path = 'D:/line' + i
+    for i in os.listdir('D:/corner/'): #C:/line/straight/
+        path = 'D:/corner/' + i
         #print("i=", i)
 
         line_image = cv2.imread(path, cv2.IMREAD_COLOR)
+        cv2.imshow("line",line_image)
         blur = cv2.GaussianBlur(line_image, (3, 3), 0)
         hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
         mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)  # 노랑최소최대값을 이용해서 maskyellow값지정
