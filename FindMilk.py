@@ -23,8 +23,8 @@ upper_yellow = np.array([255, 255, 122])
 # HSV
 # lower_red = np.array([150, 50, 15])
 # upper_red = np.array([180, 255, 255])
-lower_blue = np.array([90, 70, 40])
-upper_blue = np.array([120, 255, 255])
+lower_blue = np.array([96, 90, 22])
+upper_blue = np.array([255, 255, 255])
 lower_green = np.array([50, 60, 30])
 upper_green = np.array([80, 255, 255])
 
@@ -32,25 +32,30 @@ upper_green = np.array([80, 255, 255])
 # lower_yellow = np.array([10, 100, 20])
 # upper_yellow = np.array([30, 255, 255])
 
+cMOTION_MILK_LOST = 101
+cMOTION_MILK_POSION_FRONT_BIG = 102
+cMOTION_MILK_POSION_FRONT_SMALL = 103
+cMOTION_MILK_POSION_LEFT = 104
+cMOTION_MILK_POSION_RIGHT = 105
+cMOTION_MILK_CATCH = 106
 
 # ----------------------------------------------------------------------------------------------------
-def mode_xpos(hsv):
+def mode_xpos(blur):
+    res = cMOTION_MILK_LOST
     hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)  # BGR을 HSV모드로 전환
     # ycbcr = cv2.cvtColor(blur, cv2.COLOR_BGR2YCR_CB)  # BGR을 YCbCr모드로 전환
 
     # cv2.imshow('hsv', hsv)
-    res_alphacolor = 128 ############ 임시
-    res_x = 199
+    #res_alphacolor = 128 ############ 임시
     binary_milk = cv2.inRange(hsv, lower_blue, upper_blue)
-    if res_alphacolor == 128:
-        binary_milk = cv2.inRange(ycbcr, lower_blue, upper_blue)
-    elif res_alphacolor == 130:
-        binary_milk = cv2.inRange(ycbcr, lower_red, upper_red)
+    #binary_milk = cv2.inRange(ycbcr, lower_blue, upper_blue)
+
+    # binary_milk = cv2.inRange(ycbcr, lower_red, upper_red)
 
     cv2.imshow('binary_milk', binary_milk)
     pixels = cv2.countNonZero(binary_milk)
     # print("pixels=", pixels)
-    if pixels > 5000:
+    if pixels > 500:
         contours, hierarchy = cv2.findContours(binary_milk, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # 컨투어
 
         # 컨투어된 영역중에서 제일 큰 부분만 선택 (배경 제거)
@@ -69,92 +74,37 @@ def mode_xpos(hsv):
         xpos = x + (w / 2)  # x좌표 중점
         ypos = y + (h / 2)
 
-        print(" x = {}, y = {}".format(xpos, ypos))
-
+        print(" xpos = {}, ypos = {}".format(xpos, ypos))
 
         if xpos == 0:
-            res_x = 199
+            res = cMOTION_MILK_LOST
             print("우유곽 없음")
 
-        elif xpos < 160:
-            xpos = 160 - xpos
+        elif xpos < 120:
+            res = cMOTION_MILK_POSION_LEFT
+            print('왼쪽으로 이동')
 
-            if xpos > 44:
-                res_x = int(xpos / 44)
-
-            else:
-                res_x = 0
-
-            print('왼쪽으로 이동', res_x, '회')
-            res_x = 100 + res_x
+        elif xpos > 200:
+            res = cMOTION_MILK_POSION_RIGHT
+            print('오른쪽으로 이동')
 
         else:
-            xpos = xpos - 160
+            if ypos == 0:
+                res = cMOTION_MILK_LOST
+                print("우유곽 없음")
 
-            if xpos > 44:
-                res_x = int(xpos / 44)
-            else:
-                res_x = 0
-
-            print('오른쪽으로 이동', res_x, '회')
-            res_x = 200 + res_x
-
-
-    return 0
-
-
-# ----------------------------------------------------------------------------------------------------
-def mode_ypos(hsv):
-    res_y = 199
-    res_alphacolor = 128
-
-    if res_alphacolor == 128:
-        binary_milk = cv2.inRange(hsv, lower_blue, upper_blue)
-    elif res_alphacolor == 130:
-        binary_milk = cv2.inRange(hsv, lower_red, upper_red)
-
-    pixels = cv2.countNonZero(binary_milk)
-
-    if pixels > 5000:
-        contours, hierarchy = cv2.findContours(binary_milk, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # 컨투어
-        cv2.imshow('cam_binary', binary_milk)
-
-        # 컨투어된 영역중에서 제일 큰 부분만 선택 (배경 제거)
-        max_contour = None
-        max_area = -1
-
-        for contour in contours:
-            area = cv2.contourArea(contour)
-            if area > max_area:
-                max_area = area
-                max_contour = contour
-
-        x, y, w, h = cv2.boundingRect(max_contour)
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
-        cv2.circle(frame, (int(x), int(y)), 3, (0, 0, 255), 3)
-        cv2.imshow('frame', frame)
-
-        ypos = y + (h / 2)
-
-        print(" ypos =", ypos)
-        # print("s = %d\n\n`" % (w * h))
-
-        if ypos == 0:
-            res_y = 199
-            print("우유곽 없음")
-
-        else:
-            if ypos >= 220:
-                res_y = 189
+            elif ypos >= 170:
+                res = cMOTION_MILK_CATCH
                 print("우유곽 잡기")
 
             else:
-                res_y = int((120 - ypos) / 30)
-                print('앞쪽으로 이동', res_y, '회')
+                res = cMOTION_MILK_POSION_FRONT_SMALL
+                print('앞쪽으로 이동')
 
-    return res_y
+    return res
 
 
+# ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 def TX_data_py2(ser, one_byte):  # one_byte= 0~255
 
@@ -224,7 +174,9 @@ while True:
         break
 
     data = str(RX_data(serial_port))
-    mode_xpos(hsv)
+    res = mode_xpos(blur)
+    print('res=', res)
+    TX_data_py2(serial_port, res)
 
 
 # ----------------------------------------------------------------------------------------------------

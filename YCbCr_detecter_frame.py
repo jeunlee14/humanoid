@@ -3,6 +3,16 @@ import cv2
 import numpy as np
 import os
 
+lower_green = np.array([0, 0, 0])
+upper_green = np.array([255, 91, 149])
+
+lower_red = np.array([0, 156, 0])
+upper_red = np.array([255, 255, 100])
+
+lower_yellow = np.array([0, 0, 0])
+upper_yellow = np.array([255, 255, 100])
+
+
 def onChange(x):
     pass
 
@@ -25,10 +35,11 @@ def setting_bar():
 
 if __name__ == '__main__':
 
-    image = cv2.imread('D://shots_2021-09-15 145601.930308.png', cv2.IMREAD_COLOR)
+    image = cv2.imread('D://shots_2021-10-06 161217.615331.png', cv2.IMREAD_COLOR)
     frame = cv2.GaussianBlur(image, (3, 3), 0)
 
     setting_bar()
+
     while True:
         Y_MAX = cv2.getTrackbarPos('Y_MAX', 'YCrCb')
         Y_MIN = cv2.getTrackbarPos('Y_MIN', 'YCrCb')
