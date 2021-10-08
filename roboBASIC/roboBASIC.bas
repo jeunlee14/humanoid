@@ -4,13 +4,13 @@ CONST cHEAD_SPEED = 6
 CONST cIR_SENSOR_PORT = 4
 
 CONST cCOUNT_MAX =3
-CONST cMIN = 61	'µÚ·Î³Ñ¾îÁ³À»¶§
-CONST cMAX = 107	'¾ÕÀ¸·Î³Ñ¾îÁ³À»¶§
+CONST cMIN = 61	'ë’¤ë¡œë„˜ì–´ì¡Œì„ë•Œ
+CONST cMAX = 107	'ì•ìœ¼ë¡œë„˜ì–´ì¡Œì„ë•Œ
 CONST cFB_TILT_AD_PORT = 0
 CONST cLR_TILT_AD_PORT = 1
 CONST cTILT_TIME_CHECK = 20  'ms
 
-CONST Àû¿Ü¼±ADÆ÷Æ®  = 4
+CONST ì ì™¸ì„ ADí¬íŠ¸  = 4
 
 '********** Setting End **********'
 
@@ -45,7 +45,7 @@ CONST cMOTION_ARROW_LEFT = &HA2
 CONST cMOTION_AREA_BLACK= &HB0
 'CONST cMOTION_AREA_GREEN = &H100
 
-'¹Ì¼Ç ÃÖÁ¾ È½¼ö
+'ë¯¸ì…˜ ìµœì¢… íšŸìˆ˜
 CONST cMOTION_MILK_LOST = &HC0
 CONST cMOTION_MILK_POSION_FRONT_BIG = &HC1
 CONST cMOTION_MILK_POSION_FRONT_SMALL = &HC2
@@ -300,7 +300,7 @@ SoundError:
 
 CheckTiltFB:
     FOR i = 0 TO cCOUNT_MAX
-        dTILT_FRONT = AD(cFB_TILT_AD_PORT)	'±â¿ï±â ¾ÕµÚ
+        dTILT_FRONT = AD(cFB_TILT_AD_PORT)	'ê¸°ìš¸ê¸° ì•ë’¤
 
         IF dTILT_FRONT > 250 OR dTILT_FRONT < 5 THEN RETURN
         IF dTILT_FRONT > cMIN AND dTILT_FRONT < cMAX THEN RETURN
@@ -430,7 +430,7 @@ MotionFrontStandup:
     GOSUB GyroOn
 
 
-    'ETX 4800, È£ÃâÇÔ¼ö
+    'ETX 4800, í˜¸ì¶œí•¨ìˆ˜
 
 
     GOTO Main
@@ -510,7 +510,7 @@ MotionBackStandup:
     GOSUB GyroOn
 
 
-    'ETX 4800, È£ÃâÇÔ¼ö
+    'ETX 4800, í˜¸ì¶œí•¨ìˆ˜
 
 
     GOTO Main
@@ -650,10 +650,7 @@ MotionCountWalk_2_Stop:
     RETURN
 
     '****************************************
-MotionMilkWalk:
-
-    'ÀÓ½Ã ³×¹øÂ°°¡ Çã¸® -5µµ¾¿
-    GOSUB MotionCatchMilk
+MotionMilkWalk_high:
 
     dWALK_SPEED = 7
     dFALL_CHECK = 0
@@ -668,27 +665,33 @@ MotionMilkWalk:
 
         MOVE G6A,95,  76, 147,  83, 101
         MOVE G6D,101,  76, 147,  83, 98
+        MOVE G6B, 190,  15,  55,  ,  ,  
+    	MOVE G6C, 190,  15,  55,  ,  ,
+    	WAIT
 
         WAIT
 
-        GOTO MotionMilkWalk_1
+        GOTO MotionMilkWalk_high_1
 
     ELSE
         dWALK_ORDER = 0
 
-        MOVE G6D,95,  76, 147,  83, 101
-        MOVE G6A,101,  76, 147,  83, 98
+        MOVE G6A,95,  76, 147,  83, 101
+        MOVE G6D,101,  76, 147,  83, 98
+        MOVE G6B, 190,  15,  55,  ,  ,  
+    	MOVE G6C, 190,  15,  55,  ,  ,
+    	WAIT
 
         WAIT
 
-        GOTO MotionMilkWalk_2
+        GOTO MotionMilkWalk_high_2
 
     ENDIF
 
 
     '************************************	
 
-MotionMilkWalk_1:
+MotionMilkWalk_high_1:
     MOVE G6A,95,  90, 125, 90, 104
     MOVE G6D,104,  77, 147,  83,  102
     WAIT
@@ -708,15 +711,15 @@ MotionMilkWalk_1:
     dWALK_COUNT = dWALK_COUNT + 1
 
     IF dWALK_COUNT > dWALK_NUMBER THEN
-        GOTO MotionMilkWalk_1_Stop
+        GOTO MotionMilkWalk_high_1_Stop
 
     ELSE
-        GOTO MotionMilkWalk_2
+        GOTO MotionMilkWalk_high_2
 
     ENDIF
 
 
-MotionMilkWalk_1_Stop:
+MotionMilkWalk_high_1_Stop:
     MOVE G6D,95,  90, 125, 85, 104
     MOVE G6A,104,  76, 145,  81,  102
     WAIT
@@ -733,7 +736,7 @@ MotionMilkWalk_1_Stop:
 
     '************************************
 
-MotionMilkWalk_2:
+MotionMilkWalk_high_2:
     MOVE G6D,95,  90, 125, 90, 104
     MOVE G6A,104,  77, 147,  83,  102
     WAIT
@@ -753,15 +756,15 @@ MotionMilkWalk_2:
     dWALK_COUNT = dWALK_COUNT + 1
 
     IF dWALK_COUNT > dWALK_NUMBER THEN
-        GOTO MotionMilkWalk_2_Stop
+        GOTO MotionMilkWalk_high_2_Stop
 
     ELSE
-        GOTO MotionMilkWalk_1
+        GOTO MotionMilkWalk_high_1
 
     ENDIF
 
 
-MotionMilkWalk_2_Stop:
+MotionMilkWalk_high_2_Stop:
     MOVE G6A,95,  90, 125, 85, 104
     MOVE G6D,104,  76, 145,  81,  102
     WAIT
@@ -776,8 +779,252 @@ MotionMilkWalk_2_Stop:
     RETURN
 
 
-    '****************************************
+MotionMilkWalk_low:
 
+    dWALK_SPEED = 7
+    dFALL_CHECK = 0
+    dWALK_COUNT = 0
+
+    GOSUB MotorAllMode3
+
+    SPEED dWALK_SPEED
+
+    IF dWALK_ORDER = 0 THEN
+        dWALK_ORDER = 1
+
+        MOVE G6A,95,  76, 147,  88, 101
+        MOVE G6D,101,  76, 147,  88, 98
+		MOVE G6B, 140,  15,  55,  ,  ,  
+    	MOVE G6C, 140,  15,  55,  ,  ,
+        WAIT
+
+        GOTO MotionMilkWalk_low_1
+
+    ELSE
+        dWALK_ORDER = 0
+
+        MOVE G6D,95,  76, 147,  88, 101
+        MOVE G6A,101,  76, 147,  88, 98
+        MOVE G6B, 140,  15,  55,  ,  ,  
+    	MOVE G6C, 140,  15,  55,  ,  ,
+
+        WAIT
+
+        GOTO MotionMilkWalk_low_2
+
+    ENDIF
+
+
+    '************************************	
+
+MotionMilkWalk_low_1:
+    MOVE G6A,95,  90, 125, 95, 104
+    MOVE G6D,104,  77, 147,  88,  102
+    WAIT
+
+    MOVE G6A,103,   73, 140, 98,  100
+    MOVE G6D, 95,  85, 147,  80, 102
+    WAIT
+
+
+    GOSUB CheckTiltFB
+    IF dFALL_CHECK = 1 THEN
+        dFALL_CHECK = 0
+        GOTO MAIN
+    ENDIF
+
+
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionMilkWalk_low_1_Stop
+
+    ELSE
+        GOTO MotionMilkWalk_low_2
+
+    ENDIF
+
+
+MotionMilkWalk_low_1_Stop:
+    MOVE G6D,95,  90, 125, 90, 104
+    MOVE G6A,104,  76, 145,  86,  102
+    WAIT
+
+
+    SPEED 12
+    GOSUB PostureMilk
+
+    '    SPEED 4
+    '    GOSUB PostureDefault
+
+
+    RETURN
+
+    '************************************
+
+MotionMilkWalk_low_2:
+    MOVE G6D,95,  90, 125, 95, 104
+    MOVE G6A,104,  77, 147,  88,  102
+    WAIT
+
+    MOVE G6D,103,    73, 140, 98,  100
+    MOVE G6A, 95,  85, 147,  80, 102
+    WAIT
+
+
+    GOSUB CheckTiltFB
+    IF dFALL_CHECK = 1 THEN
+        dFALL_CHECK = 0
+        GOTO MAIN
+    ENDIF
+
+
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionMilkWalk_low_2_Stop
+
+    ELSE
+        GOTO MotionMilkWalk_low_1
+
+    ENDIF
+
+
+MotionMilkWalk_low_2_Stop:
+    MOVE G6A,95,  90, 125, 90, 104
+    MOVE G6D,104,  76, 145,  86,  102
+    WAIT
+
+    SPEED 12
+    GOSUB PostureMilk
+
+    '    SPEED 4
+    '    GOSUB PostureDefault
+
+
+    RETURN
+
+
+MotionBackwardWalk:
+
+    dWALK_SPEED = 15
+    dFALL_CHECK = 0
+    dWALK_COUNT = 0
+
+    GOSUB MotorAllMode3
+
+    SPEED dWALK_SPEED
+
+    IF dWALK_ORDER = 0 THEN
+        dWALK_ORDER = 1
+        MOVE G6A,95,  76, 145,  93, 101
+        MOVE G6D,101,  76, 145,  93, 98
+        MOVE G6B,100
+        MOVE G6C,100
+        WAIT
+
+        GOTO MotionBackwardWalk_1
+    ELSE
+        dWALK_ORDER = 0
+        MOVE G6D,95,  76, 145,  93, 101
+        MOVE G6A,101,  76, 145,  93, 98
+        MOVE G6B,100
+        MOVE G6C,100
+        WAIT
+
+        GOTO MotionBackwardWalk_2
+    ENDIF
+
+
+    '**********************
+
+MotionBackwardWalk_1:
+    MOVE G6D,104,  76, 147,  93,  102
+    MOVE G6A,95,  95, 120, 95, 104
+    MOVE G6B,115
+    MOVE G6C,85
+    WAIT
+
+    MOVE G6A, 103,  79, 147,  89, 100
+    MOVE G6D,95,   65, 147, 103,  102
+    WAIT
+
+    GOSUB CheckTiltFB
+    IF dFALL_CHECK = 1 THEN
+        dFALL_CHECK = 0
+        GOTO MAIN 'í™•ì¸
+    ENDIF
+
+    dWALK_COUNT = dWALK_COUNT + 1
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionBackwardWalk_1_Stop
+
+    ELSE
+        GOTO MotionBackwardWalk_2
+    ENDIF
+
+MotionBackwardWalk_1_Stop:
+    MOVE G6D,95,  85, 130, 100, 104
+    MOVE G6A,104,  77, 146,  93,  102
+    MOVE G6C, 100
+    MOVE G6B,100
+    WAIT
+
+    'SPEED 15
+    GOSUB PostureInit
+
+    SPEED 5
+    GOSUB PostureDefault
+
+    'DELAY 400
+    RETURN	
+
+    '*********************************
+
+MotionBackwardWalk_2:
+    MOVE G6A,104,  76, 147,  93,  102
+    MOVE G6D,95,  95, 120, 95, 104
+    MOVE G6C,115
+    MOVE G6B,85
+    WAIT
+
+    MOVE G6D, 103,  79, 147,  89, 100
+    MOVE G6A,95,   65, 147, 103,  102
+    WAIT
+
+    GOSUB CheckTiltFB
+    IF dFALL_CHECK = 1 THEN
+        dFALL_CHECK = 0
+        GOTO MAIN
+    ENDIF
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionBackwardWalk_2_Stop
+
+    ELSE
+        GOTO MotionBackwardWalk_1
+
+    ENDIF
+
+
+MotionBackwardWalk_2_Stop:
+    MOVE G6A,95,  85, 130, 100, 104
+    MOVE G6D,104,  77, 146,  93,  102
+    MOVE G6B, 100
+    MOVE G6C,100
+    WAIT
+
+    'SPEED 15
+    GOSUB PostureInit
+
+    SPEED 5
+    GOSUB PostureDefault
+
+    'DELAY 400
+    RETURN
+
+
+    '****************************************
 
 MotionOpenDoor:
     SPEED 17
@@ -788,10 +1035,10 @@ MotionOpenDoor:
     GOSUB MotionCountWalk
 
     'HIGHSPEED SETON
-    'GOSUB È½¼ö_ÀüÁøÁ¾Á¾°ÉÀ½_¹®
+    'GOSUB íšŸìˆ˜_ì „ì§„ì¢…ì¢…ê±¸ìŒ_ë¬¸
     'HIGHSPEED SETOFF
 
-    DELAY 1000 '¹® ´İÈú¶§±îÁö ´ë±â
+    DELAY 1000 'ë¬¸ ë‹«íë•Œê¹Œì§€ ëŒ€ê¸°
 
     RETURN
 
@@ -845,6 +1092,36 @@ MotionTurnRight10:
 
     RETURN
 
+MotionTurnLeft20:
+    MOTORMODE G6A,3,3,3,3,2
+    MOTORMODE G6D,3,3,3,3,2
+
+    SPEED 8
+    MOVE G6D,95,  56, 145,  113, 105, 100
+    MOVE G6A,93,  96, 145,  73, 105, 100
+    MOVE G6C,90
+    MOVE G6B,110
+    WAIT
+
+    SPEED 6
+    MOVE G6D,94,  56, 145,  113, 105, 100
+    MOVE G6A,93,  96, 145,  73, 105, 100
+    WAIT
+
+    SPEED 7
+    MOVE G6D,93,  56, 145,  113, 105, 100
+    MOVE G6A,93,  96, 145,  73, 105, 100
+    WAIT
+
+    SPEED 6
+    MOVE G6D,101,  76, 146,  93, 98, 100
+    MOVE G6A,101,  76, 146,  93, 98, 100
+    WAIT
+
+    GOSUB PostureDefault
+
+    RETURN
+
 MotionTurnRight20:
     MOTORMODE G6A,3,3,3,3,2
     MOTORMODE G6D,3,3,3,3,2
@@ -875,15 +1152,13 @@ MotionTurnRight20:
 
     RETURN
 
-MotionTurnLeft20:
-    MOTORMODE G6A,3,3,3,3,2
-    MOTORMODE G6D,3,3,3,3,2
+    '****************************************
+MotionTurnLeftMilk20:
+    GOSUB MotorLegMode2
 
     SPEED 8
     MOVE G6D,95,  56, 145,  113, 105, 100
     MOVE G6A,93,  96, 145,  73, 105, 100
-    MOVE G6C,90
-    MOVE G6B,110
     WAIT
 
     SPEED 6
@@ -901,8 +1176,39 @@ MotionTurnLeft20:
     MOVE G6A,101,  76, 146,  93, 98, 100
     WAIT
 
-    GOSUB PostureDefault
 
+    GOSUB MotorLegMode1
+
+    GOSUB PostureMilk
+    RETURN
+
+MotionTurnRightMilk20:
+    GOSUB MotorLegMode2
+
+    SPEED 8
+    MOVE G6D,93,  96, 145,  73, 105, 100
+    MOVE G6A,95,  56, 145,  113, 105, 100
+    WAIT
+
+    SPEED 6
+    MOVE G6D,93,  96, 145,  73, 105, 100
+    MOVE G6A,94,  56, 145,  113, 105, 100
+    WAIT
+
+    SPEED 7
+    MOVE G6D,93,  96, 145,  73, 105, 100
+    MOVE G6A,93,  56, 145,  113, 105, 100
+    WAIT
+
+    SPEED 6
+    MOVE G6D,100,  76, 146,  93, 98, 100
+    MOVE G6A,101,  76, 146,  93, 98, 100
+    WAIT
+
+
+    GOSUB MotorLegMode1
+
+    GOSUB PostureMilk
     RETURN
 
 MotionGoLeftSide20:
@@ -960,6 +1266,7 @@ MotionGoRightSide20:
     RETURN
 
     '****************************************
+
 MotionCatchMilk:
 
     GOSUB MotorLegMode3
@@ -971,63 +1278,67 @@ MotionCatchMilk:
     GOSUB MotorArmMode3
 
     SPEED 10
-    MOVE G6B,150, 10, 100              'ÆÈ»¸±â
+    MOVE G6B,150, 10, 100              'íŒ”ë»—ê¸°
     MOVE G6C,150, 10, 100
     WAIT	
 
     SPEED 4
-   ' MOVE G6A,  87, 145,  33, 159, 115, '´õ ÂŞ±¸¸®±â
-'    MOVE G6D,  87, 145,  33, 159, 115,
-'    WAIT
+    ' MOVE G6A,  87, 145,  33, 159, 115, 'ë” ì­ˆêµ¬ë¦¬ê¸°
+    ' MOVE G6D,  87, 145,  33, 159, 115,
+    ' WAIT
 
-	MOVE G6A,  77, 155,  33, 144, 120,  
-	MOVE G6D,  77, 155,  33, 144, 120,  
-	WAIT
-	
+    MOVE G6A,  77, 155,  33, 144, 120,
+    MOVE G6D,  77, 155,  33, 144, 120,
+    WAIT
+
     SPEED 5
-    MOVE G6B, 145,  15,  55,  ,  ,     '¿ìÀ¯°û Àâ±â
+    MOVE G6B, 145,  15,  55,  ,  ,     'ìš°ìœ ê³½ ì¡ê¸°
     MOVE G6C, 145,  15,  55,  ,  ,
     WAIT
-	
-    MOVE G6B, 140,  15,  55,  ,  ,     '¿ìÀ¯°û Àâ±â
-    MOVE G6C, 140,  15,  55,  ,  ,
-	WAIT 
-	
-    MOVE G6B,150, 30, 100              'ÆÈ»¸±â
+
+    MOVE G6B, 143,  15,  55,  ,  ,     'ìš°ìœ ê³½ ë”  ì¡ê¸°
+    MOVE G6C, 143,  15,  55,  ,  ,
+    WAIT
+
+    MOVE G6B,150, 30, 100              'íŒ”ë»—ê¸°
     MOVE G6C,150, 30, 100
     WAIT
-	
-	SPEED 5
-    MOVE G6B, 145,  15,  55,  ,  ,     '¿ìÀ¯°û Àâ±â
+
+    SPEED 5
+    MOVE G6B, 145,  15,  55,  ,  ,     'ìš°ìœ ê³½ ì¡ê¸°
     MOVE G6C, 145,  15,  55,  ,  ,
     WAIT
 
-    MOVE G6B,150, 20, 100              'ÆÈ»¸±â
+    MOVE G6B, 143,  15,  55,  ,  ,     'ìš°ìœ ê³½ ë”  ì¡ê¸°
+    MOVE G6C, 143,  15,  55,  ,  ,
+    WAIT
+
+    MOVE G6B,150, 20, 100              'íŒ”ë»—ê¸°
     MOVE G6C,150, 20, 100
     WAIT
 
 
     SPEED 4
-    MOVE G6B, 145,  15,  55,  ,  ,     '¿ìÀ¯°û Àâ±â
+    MOVE G6B, 145,  15,  55,  ,  ,     'ìš°ìœ ê³½ ì¡ê¸°
     MOVE G6C, 145,  15,  55,  ,  ,
     WAIT
 
     SPEED 6
-    MOVE G6A, 100, 145,  28, 145, 100, '´Ù¸®¸ğÀ¸±â
+    MOVE G6A, 100, 145,  28, 145, 100, 'ë‹¤ë¦¬ëª¨ìœ¼ê¸°
     MOVE G6D, 100, 145,  28, 145, 100,
     WAIT
 
     SPEED 5
-    MOVE G6A,100, 76, 145,  93, 100, 100 'ÀÏ¾î¼­±â
+    MOVE G6A,100, 76, 145,  93, 100, 100 'ì¼ì–´ì„œê¸°
     MOVE G6D,100, 76, 145,  93, 100, 100
     WAIT
 
-    MOVE G6B, 190,  15,  55,  ,  ,     '¿ìÀ¯°û Àâ±â ´õ À§·Î
+    MOVE G6B, 190,  15,  55,  ,  ,     'ìš°ìœ ê³½ ì¡ê¸° ë” ìœ„ë¡œ
     MOVE G6C, 190,  15,  55,  ,  ,
     WAIT
 
 
-    '    MOVE G6A, 100,  76, 145,  83, 100,   'Çã¸®Æì±â
+    '    MOVE G6A, 100,  76, 145,  83, 100,   'í—ˆë¦¬í´ê¸°
     '    MOVE G6D, 100,  76, 145,  83, 100,
     '    WAIT
 
@@ -1038,6 +1349,53 @@ MotionCatchMilk:
     RETURN
 
 MotionPutMilk:
+	GOSUB GyroOff
+
+    GOSUB MotorLegMode3
+
+
+    SPEED 5
+    MOVE G6D,100,  71, 145,  93, 100, 100
+    MOVE G6A,100,  71, 145,  93, 100, 100
+    WAIT
+
+    SPEED 9
+    MOVE G6A,100, 140,  37, 145, 100, 100
+    MOVE G6D,100, 140,  37, 145, 100, 100
+    WAIT
+
+    MOVE G6A,  87, 145,  28, 159, 115, 'ë” ì­ˆêµ¬ë¦¬ê¸°
+    MOVE G6D,  87, 145,  28, 159, 115,
+    WAIT
+
+
+    GOSUB MotorArmMode3
+
+    MOVE G6B, 153,  15,  55,  ,  ,     'íŒ” ë‚´ë¦¬ê¸°
+    MOVE G6C, 153,  15,  55,  ,  ,
+    WAIT
+
+    MOVE G6B,165, 30, 100              'íŒ”ë»—ê¸°
+    MOVE G6C,165, 30, 100
+    WAIT
+
+    SPEED 6
+    MOVE G6A, 100, 145,  28, 145, 100,
+    MOVE G6D, 100, 145,  28, 145, 100,
+    WAIT
+
+    ' SPEED 10
+    '    MOVE G6B, 153,  50,  55,  ,  ,
+    '    MOVE G6C, 153,  50,  55,  ,  ,
+    '    WAIT
+
+    MOVE G6B,100,  30,  80
+    MOVE G6C,100,  30,  80
+    WAIT
+
+    GOSUB GyroOn
+
+    GOSUB PostureInit
 
     RETURN
     '********** Motion End **********'
@@ -1176,7 +1534,7 @@ StateLineTracingToDoor2:
     IF rx_data = cMOTION_LINE_LOST THEN
         GOSUB MotionOpenDoor
 
-        'MUSIC "GFEDC"		'¹¹Áö?????
+        'MUSIC "GFEDC"		'ë­ì§€?????
         'STOP 'temp fin'
 
         ETX 4800, cSIGNAL_STATE	
@@ -1218,13 +1576,13 @@ StateArrowRecognition:
     GOSUB UartRx
 
     IF rx_data = cMOTION_ARROW_UNKNOWN THEN
-        'ÀÎ½Ä ½ÇÆĞ ½Ã ¶óÀÎ Á¤·Ä ÇÊ¿ä
+        'ì¸ì‹ ì‹¤íŒ¨ ì‹œ ë¼ì¸ ì •ë ¬ í•„ìš”
         ETX 4800, cSIGNAL_IMAGE
         GOSUB UartRx
-        'ÀüÁø ÈÄ È¸Àü ÈÄ ÀüÁø
+        'ì „ì§„ í›„ íšŒì „ í›„ ì „ì§„
     ELSEIF rx_data = cMOTION_ARROW_RIGHT THEN
 
-        dARROW = cMOTION_ARROW_RIGHT	' ±¸¿ª ÀÎ½Ä ½Ã ÇÊ¿ä  or  È¸Àü¸ğ¼Ç¼Û½Å
+        dARROW = cMOTION_ARROW_RIGHT	' êµ¬ì—­ ì¸ì‹ ì‹œ í•„ìš”  or  íšŒì „ëª¨ì…˜ì†¡ì‹ 
 
         FOR i = 1 TO 5
             GOSUB MotionTurnRight20
@@ -1232,7 +1590,7 @@ StateArrowRecognition:
 
     ELSEIF rx_data = cMOTION_ARROW_LEFT THEN
 
-        dARROW = cMOTION_ARROW_LEFT		' ±¸¿ª ÀÎ½Ä ½Ã ÇÊ¿ä  or  È¸Àü¸ğ¼Ç¼Û½Å
+        dARROW = cMOTION_ARROW_LEFT		' êµ¬ì—­ ì¸ì‹ ì‹œ í•„ìš”  or  íšŒì „ëª¨ì…˜ì†¡ì‹ 
 
         FOR i = 1 TO 5
             GOSUB MotionTurnLeft20
@@ -1258,7 +1616,7 @@ StateLineTracing2:
 
     IF rx_data = cMOTION_LINE_LOST THEN
 
-        ' ¶óÀÎ ÀÌÅ»½Ã ´ëÃ³ ¹æ¹ı Á¤ÇÏ±â ->ÇÊ¿ä x
+        ' ë¼ì¸ ì´íƒˆì‹œ ëŒ€ì²˜ ë°©ë²• ì •í•˜ê¸° ->í•„ìš” x
 
     ELSEIF rx_data = cMOTION_LINE_MOVE_FRONT_SMALL THEN	
         dWALK_NUMBER = 4
@@ -1284,7 +1642,7 @@ StateLineTracing2:
 
     ELSEIF rx_data = cMOTION_LINE_CORNER THEN
         ETX 4800, cSIGNAL_STATE		
-        'ÄÚ³Ê ¹ß°ß ÈÄ ¸î°ÉÀ½ °É¾î°¥°ÇÁö ¼³Á¤
+        'ì½”ë„ˆ ë°œê²¬ í›„ ëª‡ê±¸ìŒ ê±¸ì–´ê°ˆê±´ì§€ ì„¤ì •
         GOTO StateAlphabetRecognition
 
     ENDIF
@@ -1297,11 +1655,11 @@ StateAlphabetRecognition:
     WAIT	'or DELAY
 
     ETX 4800, cSIGNAL_IMAGE
-    GOSUB UartRx '¾ËÆÄºª °ª¸¸, »ö»ó X '°ªÀ» ¹Ş¾Æ¿Ã ÇÊ¿ä x
+    GOSUB UartRx 'ì•ŒíŒŒë²³ ê°’ë§Œ, ìƒ‰ìƒ X 'ê°’ì„ ë°›ì•„ì˜¬ í•„ìš” x
 
-    ' ÀÎ½Ä ½ÇÆĞÇÒ °æ¿ì ÇÊ¿äÇÑ°¡?
+    ' ì¸ì‹ ì‹¤íŒ¨í•  ê²½ìš° í•„ìš”í•œê°€?
 
-    dALPHABET = rx_data		' ¸¶Áö¸· È®Áø±¸¿ª ¸»ÇÒ¶§ ÇÊ¿ä
+    dALPHABET = rx_data		' ë§ˆì§€ë§‰ í™•ì§„êµ¬ì—­ ë§í• ë•Œ í•„ìš”
 
     ETX 4800, cSIGNAL_STATE		
     GOTO StateAreaRecognition
@@ -1309,9 +1667,9 @@ StateAlphabetRecognition:
 
 StateAreaRecognition:
 
-    dBLACK_AREA = 0		' ¹Ì¼Ç ¼öÇà ½Ã ÇÊ¿ä
+    dBLACK_AREA = 0		' ë¯¸ì…˜ ìˆ˜í–‰ ì‹œ í•„ìš”
 
-    'È­»ìÇ¥ °ª¿¡ µû¶ó È¸Àü
+    'í™”ì‚´í‘œ ê°’ì— ë”°ë¼ íšŒì „
     IF dARROW = cMOTION_ARROW_RIGHT THEN
         GOSUB PostureHeadRight45
 
@@ -1330,7 +1688,7 @@ StateAreaRecognition:
 
     ETX 4800, cSIGNAL_STATE
 
-    IF rx_data = cMOTION_AREA_BLACK THEN	' È®Áø±¸¿ªÀÌ¸é ¾ËÆÄºª °ª ÀúÀå
+    IF rx_data = cMOTION_AREA_BLACK THEN	' í™•ì§„êµ¬ì—­ì´ë©´ ì•ŒíŒŒë²³ ê°’ ì €ì¥
         dBLACK_AREA = 1
         ON dMISSION_NUMBER GOTO BlackAreaSaveFirst, BlackAreaSaveSecond, BlackAreaSaveThird
 
@@ -1339,7 +1697,7 @@ StateAreaRecognition:
     ENDIF
 
 
-    ' È®Áø±¸¿ª ÀúÀå , ÃÊ±âÈ­ ÇÊ¿ä? ¾ÈÀü±¸¿ªÀÌ¸é?
+    ' í™•ì§„êµ¬ì—­ ì €ì¥ , ì´ˆê¸°í™” í•„ìš”? ì•ˆì „êµ¬ì—­ì´ë©´?
 BlackAreaSaveFirst:
     dBLACK_AREA_FIRST = dALPHABET
     GOTO StateMilkPosionFind_1
@@ -1370,7 +1728,7 @@ StateMilkPosionFind_1:
 
     ELSEIF rx_data = cMOTION_MILK_CATCH THEN
         GOSUB MotionCatchMilk
-        
+
         GOTO Main
 
         'ETX 4800, cSIGNAL_STATE
@@ -1382,7 +1740,7 @@ StateMilkPosionFind_1:
 
 StateMilkPosionFind_2:
 
-    IF rx_data = cMOTION_MILK_POSION_FRONT_BIG OR rx_data = cMOTION_MILK_CATCH THEN'Àü¹æÇÏÇâ 70µµÀÏ °æ¿ì¸¸
+    IF rx_data = cMOTION_MILK_POSION_FRONT_BIG OR rx_data = cMOTION_MILK_CATCH THEN'ì „ë°©í•˜í–¥ 70ë„ì¼ ê²½ìš°ë§Œ
         dWALK_NUMBER= 8
         GOSUB MotionCountWalk
 
@@ -1422,13 +1780,13 @@ StateMilkPosionFind_3:
 
 
 StateMilkCarry:
-    ' È®Áø±¸¿ª ¹Ù·Î ÄÚ³ÊÃ£±â
+    ' í™•ì§„êµ¬ì—­ ë°”ë¡œ ì½”ë„ˆì°¾ê¸°
 
     IF dBLACK_AREA = 1 THEN		
         GOTO StateCornerRecognition
 
-        ' ¾ÈÀü±¸¿ª
-        ' °í°³ µ¹·Á¼­ ±¸¿ª À§Ä¡ È®ÀÎ ÈÄ È¸ÀüÇØ¼­ ³»·Á³õ°í ¿À±â
+        ' ì•ˆì „êµ¬ì—­
+        ' ê³ ê°œ ëŒë ¤ì„œ êµ¬ì—­ ìœ„ì¹˜ í™•ì¸ í›„ íšŒì „í•´ì„œ ë‚´ë ¤ë†“ê³  ì˜¤ê¸°
 
 
 
@@ -1443,9 +1801,9 @@ StateMilkCarry:
     GOTO StateCornerRecognition
 
 StateCornerRecognition:
-    ' °È´Â ¸ğ¼ÇÀÌ ´Ù¸£´Ù
-    ' ¾ÈÀü±¸¿ªÀº ¿ìÀ¯°û ÀÌ¹Ì ³»·Á³õ°í °È°í,
-    ' È®Áø±¸¿ªÀº ¿ìÀ¯°ûÀ» µé°í °È´Â´Ù.
+    ' ê±·ëŠ” ëª¨ì…˜ì´ ë‹¤ë¥´ë‹¤
+    ' ì•ˆì „êµ¬ì—­ì€ ìš°ìœ ê³½ ì´ë¯¸ ë‚´ë ¤ë†“ê³  ê±·ê³ ,
+    ' í™•ì§„êµ¬ì—­ì€ ìš°ìœ ê³½ì„ ë“¤ê³  ê±·ëŠ”ë‹¤.
 
     ETX 4800, cSIGNAL_IMAGE
     GOSUB UartRx
@@ -1471,7 +1829,7 @@ StateCornerRecognition:
 
 
 
-    'È®Áø ±¸¿ª ¹ßÇ¥!!!
+    'í™•ì§„ êµ¬ì—­ ë°œí‘œ!!!
 
     '********** State End **********'
 
@@ -1557,7 +1915,7 @@ KEY10: '0
     '****************************
     '********************************
 
-KEY11: ' ¡ã
+KEY11: ' â–²
     dWALK_NUMBER = 2
     GOSUB MotionCountWalk
     GOTO UartConnectWait
@@ -1566,8 +1924,9 @@ KEY11: ' ¡ã
     '****************************
     '********************************
 
-KEY12: ' ¡å
-	GOSUB PostureSit
+KEY12: ' â–¼
+    dWALK_NUMBER = 2
+    GOSUB MotionBackwardWalk
     GOTO UartConnectWait
 
 
@@ -1575,14 +1934,16 @@ KEY12: ' ¡å
     '****************************
     '********************************
 
-KEY13: ' ¢º
+KEY13: ' â–¶
+    GOSUB MotionTurnRightMilk20
     GOTO UartConnectWait
 
 
     '****************************
     '********************************
 
-KEY14: ' ¢¸
+KEY14: ' â—€
+    GOSUB MotionTurnLeftMilk20
     GOTO UartConnectWait
 
 
@@ -1613,7 +1974,7 @@ KEY17: ' C
 
 KEY18: ' E
     dWALK_NUMBER = 10
-    GOSUB MotionMilkWalk
+    GOSUB MotionMilkWalk_high
     GOTO UartConnectWait
 
 
@@ -1635,7 +1996,9 @@ KEY20: ' B
     '****************************
     '********************************
 
-KEY21: ' ¡â
+KEY21: ' â–³
+	dWALK_NUMBER = 10
+    GOSUB MotionMilkWalk_low
     GOTO UartConnectWait
 
 
@@ -1649,6 +2012,7 @@ KEY22: ' *
     '********************************
 
 KEY23: ' G
+    GOSUB MotionCatchMilk
     GOTO UartConnectWait
 
 
@@ -1669,7 +2033,8 @@ KEY25: ' P1
     '****************************
     '********************************
 
-KEY26: ' ¡á
+KEY26: ' â– 
+    GOSUB PostureSit
     GOTO UartConnectWait
 
 
@@ -1683,28 +2048,29 @@ KEY27: ' D
     '****************************
     '********************************
 
-KEY28: ' ¢·
+KEY28: ' â—
     GOTO UartConnectWait
 
 
     '****************************
     '********************************
 
-KEY29: ' ¡à
+KEY29: ' â–¡
+	GOSUB MotionPutMilk
     GOTO UartConnectWait
 
 
     '****************************
     '********************************
 
-KEY30: ' ¢¹
+KEY30: ' â–·
     GOTO UartConnectWait
 
 
     '****************************
     '********************************
 
-KEY31: ' ¡ä
+KEY31: ' â–½
     GOTO UartConnectWait
 
 
