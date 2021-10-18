@@ -666,7 +666,7 @@ MotionCountWalk_2_Stop:
 
     '****************************************
 
-MotionMilkWalk_origin:
+MotionCountWalk_origin:
     GOSUB MotorAllMode3
     dWALK_COUNT = 0
     SPEED 7
@@ -681,7 +681,7 @@ MotionMilkWalk_origin:
         MOVE G6C,100
         WAIT
 
-        GOTO MotionMilkWalk_origin_1
+        GOTO MotionCountWalk_origin_1
     ELSE
         dWALK_ORDER = 0
         MOVE G6D,95,  76, 147,  93, 101
@@ -690,11 +690,11 @@ MotionMilkWalk_origin:
         MOVE G6C,100
         WAIT
 
-        GOTO MotionMilkWalk_origin_2
+        GOTO MotionCountWalk_origin_2
     ENDIF
 
 
-MotionMilkWalk_origin_1:
+MotionCountWalk_origin_1:
     MOVE G6A,95,  90, 125, 100, 104
     MOVE G6D,104,  77, 147,  93,  102
     MOVE G6B, 85
@@ -715,14 +715,14 @@ MotionMilkWalk_origin_1:
     dWALK_COUNT = dWALK_COUNT + 1
 
     IF dWALK_COUNT > dWALK_NUMBER THEN
-        GOTO MotionMilkWalk_origin_1_stop
+        GOTO MotionCountWalk_origin_1_stop
 
     ELSE
-        GOTO MotionMilkWalk_origin_2
+        GOTO MotionCountWalk_origin_2
 
     ENDIF
 
-MotionMilkWalk_origin_1_stop:
+MotionCountWalk_origin_1_stop:
     MOVE G6D,95,  90, 125, 95, 104
     MOVE G6A,104,  76, 145,  91,  102
     MOVE G6C, 100
@@ -738,7 +738,7 @@ MotionMilkWalk_origin_1_stop:
     'DELAY 400
     RETURN
 
-MotionMilkWalk_origin_2:
+MotionCountWalk_origin_2:
     MOVE G6D,95,  95, 120, 100, 104
     MOVE G6A,104,  77, 147,  93,  102
     MOVE G6C, 85
@@ -759,15 +759,15 @@ MotionMilkWalk_origin_2:
      dWALK_COUNT = dWALK_COUNT + 1
 
     IF dWALK_COUNT > dWALK_NUMBER THEN
-        GOTO MotionMilkWalk_origin_2_stop
+        GOTO MotionCountWalk_origin_2_stop
 
     ELSE
-        GOTO MotionMilkWalk_origin_1
+        GOTO MotionCountWalk_origin_1
 
     ENDIF
 
 
-MotionMilkWalk_origin_2_stop:
+MotionCountWalk_origin_2_stop:
     MOVE G6A,95,  90, 125, 95, 104
     MOVE G6D,104,  76, 145,  91,  102
     MOVE G6B, 100
