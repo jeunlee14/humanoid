@@ -29,7 +29,7 @@ CONST cMOTION_LINE_TURN_RIGHT_SMALL = &H85
 CONST cMOTION_LINE_TURN_LEFT_BIG = &H86
 CONST cMOTION_LINE_TURN_RIGHT_BIG = &H87
 CONST cMOTION_LINE_LOST = &H88
-CONST cMOTION_LINE_CORNER = &H89
+CONST cMOTION_LINE_CORNER = &H89 'MOTION_LINE_STOP
 
 CONST cMOTION_DIRECTION_UNKNOWN = &H90
 CONST cMOTION_DIRECTION_EAST = &H91
@@ -43,7 +43,7 @@ CONST cMOTION_ARROW_RIGHT = &HA1
 CONST cMOTION_ARROW_LEFT = &HA2
 
 CONST cMOTION_AREA_BLACK= &HB0
-'CONST cMOTION_AREA_GREEN = &H100
+CONST cMOTION_AREA_GREEN = &HB1
 
 '미션 최종 횟수
 CONST cMOTION_MILK_LOST = &HC0
@@ -52,6 +52,7 @@ CONST cMOTION_MILK_POSION_FRONT_SMALL = &HC2
 CONST cMOTION_MILK_POSION_LEFT = &HC3
 CONST cMOTION_MILK_POSION_RIGHT = &HC4
 CONST cMOTION_MILK_CATCH = &HC5
+CONST cMOTION_MILK_PUTDOWN = &HC6	
 
 DIM rx_data AS BYTE
 DIM i AS BYTE
@@ -71,10 +72,13 @@ DIM dTILT_FRONT AS BYTE
 DIM dTILT_BACK AS BYTE
 DIM dGYRO_ON_OFF AS BYTE
 DIM dINFRARED_dISTANCE_VALUE AS BYTE
-
+DIM dHEAD_LR_ANGLE AS BYTE
+DIM dHEAD_UD_ANGLE AS BYTE
+DIM count AS BYTE
 '********** Potocol Value End **********'
 dWALK_ORDER = 0
 dARROW = &HA1
+
 
 GOTO Main
 
@@ -211,67 +215,78 @@ PostureSit:
 
     '****************************************
 
-PostureHeadLeft10:
+PostureHeadTurn:
     SPEED cHEAD_SPEED
-    SERVO 11, 90
+    SERVO 11, dHEAD_LR_ANGLE
     WAIT
     RETURN
 
-PostureHeadLeft45:
-    SPEED cHEAD_SPEED
-    SERVO 11, 55
-    WAIT
-    RETURN
-
-PostureHeadRight10:
-    SPEED cHEAD_SPEED
-    SERVO 11, 110
-    WAIT
-    RETURN
-
-PostureHeadRight45:
-    SPEED cHEAD_SPEED
-    SERVO 11, 145
-    WAIT
-    RETURN
-
+    'PostureHeadLeft55:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 11, 90
+    '    WAIT
+    '    RETURN
+    '
+    'PostureHeadLeft80:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 11, 10
+    '    WAIT
+    '    RETURN
+    '
+    'PostureHeadRight10:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 11, 110
+    '    WAIT
+    '    RETURN
+    '
+    'PostureHeadRight45:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 11, 145
+    '    WAIT
+    '    RETURN
+    '
+    'PostureHeadRight80:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 11, 180
+    '    WAIT
+    '    RETURN
     '****************************************
 
-PostureHeadDown30:
+PostureHeadDown:
     SPEED cHEAD_SPEED
-    SERVO 16, 30
+    SERVO 16, dHEAD_UD_ANGLE
     WAIT
     RETURN
-
-PostureHeadDown35:
-    SPEED cHEAD_SPEED
-    SERVO 16, 35
-    WAIT
-    RETURN
-
-PostureHeadDown70:
-    SPEED cHEAD_SPEED
-    SERVO 16, 70
-    WAIT
-    RETURN
-
-PostureHeadDown80:
-    SPEED cHEAD_SPEED
-    SERVO 16, 80
-    WAIT
-    RETURN
-
-PostureHeadDown86:
-    SPEED cHEAD_SPEED
-    SERVO 16, 86
-    WAIT
-    RETURN
-
-PostureHeadDown100:
-    SPEED cHEAD_SPEED
-    SERVO 16, 100
-    WAIT
-    RETURN
+    '
+    'PostureHeadDown35:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 16, 35
+    '    WAIT
+    '    RETURN
+    '
+    'PostureHeadDown70:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 16, 70
+    '    WAIT
+    '    RETURN
+    '
+    'PostureHeadDown80:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 16, 80
+    '    WAIT
+    '    RETURN
+    '
+    'PostureHeadDown86:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 16, 86
+    '    WAIT
+    '    RETURN
+    '
+    'PostureHeadDown100:
+    '    SPEED cHEAD_SPEED
+    '    SERVO 16, 100
+    '    WAIT
+    '    RETURN
 
     '********** Posture Setting End **********'
 
@@ -650,6 +665,126 @@ MotionCountWalk_2_Stop:
     RETURN
 
     '****************************************
+    
+MotionMilkWalk_origin:
+	GOSUB MotorAllMode3
+    dWALK_COUNT = 0
+    SPEED 7
+    HIGHSPEED SETON
+
+
+    IF dWALK_ORDER = 0 THEN
+        dWALK_ORDER = 1
+        MOVE G6A,95,  76, 147,  93, 101
+        MOVE G6D,101,  76, 147,  93, 98
+        MOVE G6B,100
+        MOVE G6C,100
+        WAIT
+
+        GOTO MotionMilkWalk_origin_1
+    ELSE
+        dWALK_ORDER = 0
+        MOVE G6D,95,  76, 147,  93, 101
+        MOVE G6A,101,  76, 147,  93, 98
+        MOVE G6B,100
+        MOVE G6C,100
+        WAIT
+
+        GOTO MotionMilkWalk_origin_2
+    ENDIF
+
+
+MotionMilkWalk_origin_1:
+	MOVE G6A,95,  90, 125, 100, 104
+    MOVE G6D,104,  77, 147,  93,  102
+    MOVE G6B, 85
+    MOVE G6C,115
+    WAIT
+
+
+	MOVE G6A,103,   73, 140, 103,  100
+    MOVE G6D, 95,  85, 147,  85, 102
+    WAIT
+
+    GOSUB CheckTiltFB
+    IF dFALL_CHECK = 1 THEN
+        dFALL_CHECK = 0
+        GOTO MAIN
+    ENDIF
+    
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionMilkWalk_origin_1_stop
+
+    ELSE
+        GOTO MotionMilkWalk_origin_2
+
+    ENDIF
+    
+MotionMilkWalk_origin_1_stop: 
+    MOVE G6D,95,  90, 125, 95, 104
+        MOVE G6A,104,  76, 145,  91,  102
+        MOVE G6C, 100
+        MOVE G6B,100
+        WAIT
+        
+        HIGHSPEED SETOFF
+        SPEED 15
+        GOSUB PostureInit
+        SPEED 5
+        GOSUB PostureDefault
+
+        'DELAY 400
+      	RETURN
+
+MotionMilkWalk_origin_2:
+    MOVE G6D,95,  95, 120, 100, 104
+    MOVE G6A,104,  77, 147,  93,  102
+    MOVE G6C, 85
+    MOVE G6B,115
+    WAIT
+
+    MOVE G6D,103,    73, 140, 103,  100
+    MOVE G6A, 95,  85, 147,  85, 102
+    WAIT
+
+
+     GOSUB CheckTiltFB
+    IF dFALL_CHECK = 1 THEN
+        dFALL_CHECK = 0
+        GOTO MAIN
+    ENDIF
+	
+	 dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionMilkWalk_origin_2_stop
+
+    ELSE
+        GOTO MotionMilkWalk_origin_1
+
+    ENDIF
+
+  
+MotionMilkWalk_origin_2_stop:
+    MOVE G6A,95,  90, 125, 95, 104
+    MOVE G6D,104,  76, 145,  91,  102
+    MOVE G6B, 100
+    MOVE G6C,100
+    WAIT
+    
+    HIGHSPEED SETOFF
+    SPEED 15
+    GOSUB PostureInit
+    SPEED 5
+    GOSUB PostureDefault
+
+    'DELAY 400
+ 	RETURN
+
+	
+    '****************************************
 MotionMilkWalk_high:
 
     dWALK_SPEED = 7
@@ -665,9 +800,9 @@ MotionMilkWalk_high:
 
         MOVE G6A,95,  76, 147,  83, 101
         MOVE G6D,101,  76, 147,  83, 98
-        MOVE G6B, 190,  15,  55,  ,  ,  
-    	MOVE G6C, 190,  15,  55,  ,  ,
-    	WAIT
+        MOVE G6B, 190,  15,  55,  ,  ,
+        MOVE G6C, 190,  15,  55,  ,  ,
+        WAIT
 
         WAIT
 
@@ -678,9 +813,9 @@ MotionMilkWalk_high:
 
         MOVE G6A,95,  76, 147,  83, 101
         MOVE G6D,101,  76, 147,  83, 98
-        MOVE G6B, 190,  15,  55,  ,  ,  
-    	MOVE G6C, 190,  15,  55,  ,  ,
-    	WAIT
+        MOVE G6B, 190,  15,  55,  ,  ,
+        MOVE G6C, 190,  15,  55,  ,  ,
+        WAIT
 
         WAIT
 
@@ -794,8 +929,8 @@ MotionMilkWalk_low:
 
         MOVE G6A,95,  76, 147,  88, 101
         MOVE G6D,101,  76, 147,  88, 98
-		MOVE G6B, 140,  15,  55,  ,  ,  
-    	MOVE G6C, 140,  15,  55,  ,  ,
+        MOVE G6B, 140,  15,  55,  ,  ,
+        MOVE G6C, 140,  15,  55,  ,  ,
         WAIT
 
         GOTO MotionMilkWalk_low_1
@@ -805,8 +940,8 @@ MotionMilkWalk_low:
 
         MOVE G6D,95,  76, 147,  88, 101
         MOVE G6A,101,  76, 147,  88, 98
-        MOVE G6B, 140,  15,  55,  ,  ,  
-    	MOVE G6C, 140,  15,  55,  ,  ,
+        MOVE G6B, 140,  15,  55,  ,  ,
+        MOVE G6C, 140,  15,  55,  ,  ,
 
         WAIT
 
@@ -1096,27 +1231,32 @@ MotionTurnLeft20:
     MOTORMODE G6A,3,3,3,3,2
     MOTORMODE G6D,3,3,3,3,2
 
-    SPEED 8
-    MOVE G6D,95,  56, 145,  113, 105, 100
-    MOVE G6A,93,  96, 145,  73, 105, 100
-    MOVE G6C,90
+    SPEED 6
+    'MOVE G6A,95,  96, 145,  73, 105, 100
+    '    MOVE G6D,95,  56, 145,  113, 105, 100
+    '    MOVE G6B,110
+    '    MOVE G6C,90
+    '    WAIT
+
+    MOVE G6A,  95,  96, 145,  73, 100,
+    MOVE G6D,  90,  61, 145, 113, 105,
     MOVE G6B,110
+    MOVE G6C,90
+    WAIT
+
+    SPEED 10
+    MOVE G6A,  96,  96, 145,  73, 100,
+    MOVE G6D,  89, 61, 145, 113, 105,
+
+    'MOVE G6A,93,  96, 145,  73, 105, 100
+    '    MOVE G6D,93,  56, 145,  113, 105, 100
     WAIT
 
     SPEED 6
-    MOVE G6D,94,  56, 145,  113, 105, 100
-    MOVE G6A,93,  96, 145,  73, 105, 100
-    WAIT
-
-    SPEED 7
-    MOVE G6D,93,  56, 145,  113, 105, 100
-    MOVE G6A,93,  96, 145,  73, 105, 100
-    WAIT
-
-    SPEED 6
-    MOVE G6D,101,  76, 146,  93, 98, 100
     MOVE G6A,101,  76, 146,  93, 98, 100
+    MOVE G6D,101,  76, 146,  93, 98, 100
     WAIT
+
 
     GOSUB PostureDefault
 
@@ -1151,6 +1291,45 @@ MotionTurnRight20:
     GOSUB PostureDefault
 
     RETURN
+
+MotionTurnLeft60:
+	MOTORMODE G6A,3,3,3,3,2
+    MOTORMODE G6D,3,3,3,3,2
+
+    SPEED 15
+    MOVE G6A,95,  116, 145,  53, 105, 100
+    MOVE G6D,95,  36, 145,  133, 105, 100
+    WAIT
+
+    SPEED 15
+    MOVE G6A,90,  116, 145,  53, 105, 100
+    MOVE G6D,90,  36, 145,  133, 105, 100
+    WAIT
+
+    SPEED 10
+    GOSUB PostureInit
+    
+    RETURN
+    
+MotionTurnRight60:
+	MOTORMODE G6A,3,3,3,3,2
+    MOTORMODE G6D,3,3,3,3,2
+
+    SPEED 15
+    MOVE G6A,95,  36, 145,  133, 105, 100
+    MOVE G6D,95,  116, 145,  53, 105, 100
+    WAIT
+
+    SPEED 15
+    MOVE G6A,90,  36, 145,  133, 105, 100
+    MOVE G6D,90,  116, 145,  53, 105, 100
+
+    WAIT
+
+    SPEED 10
+    GOSUB PostureInit
+    
+    RETURN 
 
     '****************************************
 MotionTurnLeftMilk20:
@@ -1240,6 +1419,35 @@ MotionGoLeftSide20:
 
     RETURN
 
+MotionGoLeftSide_Milk20:
+    MOTORMODE G6A,3,3,3,3,2
+    MOTORMODE G6D,3,3,3,3,2
+
+
+    SPEED 12
+    MOVE G6A, 95,  90, 125, 100, 104, 100
+    MOVE G6D,105,  76, 145,  93, 104, 100
+    WAIT
+
+    SPEED 12
+    MOVE G6A, 102,  77, 145, 93, 100, 100
+    MOVE G6D,90,  80, 140,  95, 107, 100
+    WAIT
+
+    SPEED 10
+    MOVE G6A,95,  76, 145,  93, 102, 100
+    MOVE G6D,95,  76, 145,  93, 102, 100
+    WAIT
+
+
+    SPEED 8
+
+    GOSUB PostureMilk
+    GOSUB MotorAllMode3
+
+
+    RETURN
+
 MotionGoRightSide20:
     MOTORMODE G6A,3,3,3,3,2
     MOTORMODE G6D,3,3,3,3,2
@@ -1261,6 +1469,31 @@ MotionGoRightSide20:
 
     SPEED 8
     GOSUB PostureDefault
+    GOSUB MotorAllMode3
+
+    RETURN
+
+MotionGoRightSide_Milk20:
+    MOTORMODE G6A,3,3,3,3,2
+    MOTORMODE G6D,3,3,3,3,2
+
+    SPEED 12
+    MOVE G6D, 95,  90, 125, 100, 104, 100
+    MOVE G6A,105,  76, 146,  93, 104, 100
+    WAIT
+
+    SPEED 12
+    MOVE G6D, 102,  77, 145, 93, 100, 100
+    MOVE G6A,90,  80, 140,  95, 107, 100
+    WAIT
+
+    SPEED 10
+    MOVE G6D,95,  76, 145,  93, 102, 100
+    MOVE G6A,95,  76, 145,  93, 102, 100
+    WAIT
+
+    SPEED 8
+    GOSUB PostureMilk
     GOSUB MotorAllMode3
 
     RETURN
@@ -1349,7 +1582,7 @@ MotionCatchMilk:
     RETURN
 
 MotionPutMilk:
-	GOSUB GyroOff
+    GOSUB GyroOff
 
     GOSUB MotorLegMode3
 
@@ -1439,15 +1672,12 @@ Initiate:
     GOSUB MotorAllMode3
     dMISSION_NUMBER = 0
 
-
     RETURN
-
 
 UartRx:
     DELAY 10
-
-    ERX 4800, rx_data, UartRx_2
-    GOTO UartRx
+    ERX 4800, rx_data, UartRx
+    RETURN
 
 UartRx_2:
     RETURN
@@ -1471,15 +1701,18 @@ UartConnectWait:
     '********** State Begin **********'
 
 StateDirectionRecognition:
-    GOSUB PostureHeadDown86
-    GOSUB PostureHeadLeft10
+    dHEAD_UD_ANGLE = 86
+    GOSUB PostureHeadDown
+    dHEAD_LR_ANGLE = 90
+    GOSUB PostureHeadTurn
     WAIT	'or DELAY
 
     ETX 4800, cSIGNAL_IMAGE
     GOSUB UartRx
 
     IF rx_data = cMOTION_DIRECTION_UNKNOWN THEN
-        GOSUB PostureHeadRight10
+        dHEAD_LR_ANGLE = 110
+        GOSUB PostureHeadTurn
         DELAY 300
 
         ETX 4800, cSIGNAL_IMAGE
@@ -1523,7 +1756,9 @@ StateDirectionRecognition:
 
 
 StateLineTracingToDoor1:
-    GOSUB PostureHeadDown35
+    dHEAD_UD_ANGLE = 35
+    GOSUB PostureHeadDown
+
     GOSUB MotorAllMode3
     WAIT	'or DELAY
 
@@ -1569,7 +1804,8 @@ StateLineTracingToDoor2:
 
 StateArrowRecognition:
     GOSUB MotorArmMode1
-    GOSUB PostureHeadDown100
+    dHEAD_UD_ANGLE = 100
+    GOSUB PostureHeadDown
     WAIT	'or DELAY
 
     ETX 4800, cSIGNAL_IMAGE
@@ -1606,7 +1842,8 @@ StateArrowRecognition:
 
 
 StateLineTracing1:
-    GOSUB PostureHeadDown30
+    dHEAD_UD_ANGLE = 30
+    GOSUB PostureHeadDown
     GOSUB MotorAllMode3
     WAIT	'or DELAY
 
@@ -1650,7 +1887,8 @@ StateLineTracing2:
     GOTO StateLineTracing2
 
 StateAlphabetRecognition:
-    GOSUB PostureHeadDown86
+    dHEAD_UD_ANGLE = 86
+    GOSUB PostureHeadDown
     GOSUB MotorAllMode1
     WAIT	'or DELAY
 
@@ -1659,7 +1897,7 @@ StateAlphabetRecognition:
 
     ' 인식 실패할 경우 필요한가?
 
-    dALPHABET = rx_data		' 마지막 확진구역 말할때 필요
+    'dALPHABET = rx_data		' 마지막 확진구역 말할때 필요
 
     ETX 4800, cSIGNAL_STATE		
     GOTO StateAreaRecognition
@@ -1671,14 +1909,18 @@ StateAreaRecognition:
 
     '화살표 값에 따라 회전
     IF dARROW = cMOTION_ARROW_RIGHT THEN
-        GOSUB PostureHeadRight45
+        dHEAD_LR_ANGLE = 145
+        GOSUB PostureHeadTurn
 
     ELSEIF dARROW = cMOTION_ARROW_LEFT THEN
-        GOSUB PostureHeadLeft45
+        dHEAD_LR_ANGLE = 45
+        GOSUB PostureHeadTurn
 
     ENDIF
 
-    GOSUB PostureHeadDown80
+    dHEAD_UD_ANGLE = 80
+    GOSUB PostureHeadDown
+
     WAIT	'or DELAY
 
     ETX 4800, cSIGNAL_IMAGE
@@ -1686,50 +1928,47 @@ StateAreaRecognition:
 
     dMISSION_NUMBER = dMISSION_NUMBER + 1
 
-    ETX 4800, cSIGNAL_STATE
-
     IF rx_data = cMOTION_AREA_BLACK THEN	' 확진구역이면 알파벳 값 저장
         dBLACK_AREA = 1
-        ON dMISSION_NUMBER GOTO BlackAreaSaveFirst, BlackAreaSaveSecond, BlackAreaSaveThird
+    ENDIF
 
-        GOTO StateMilkPosionFind_1
+    ETX 4800, cSIGNAL_STATE
+    GOTO StateMilkPosionFind
+
+    ' 확진구역 저장 , 초기화 필요? 안전구역이면?
+
+StateMilkPosionFind:
+    count = 0
+
+    IF dARROW = cMOTION_ARROW_RIGHT THEN
+        GOSUB MotionTurnRight20
+        GOSUB MotionTurnRight20
+
+    ELSEIF dARROW = cMOTION_ARROW_LEFT THEN
+        GOSUB MotionTurnLeft20
+        GOSUB MotionTurnLeft20
 
     ENDIF
 
-
-    ' 확진구역 저장 , 초기화 필요? 안전구역이면?
-BlackAreaSaveFirst:
-    dBLACK_AREA_FIRST = dALPHABET
-    GOTO StateMilkPosionFind_1
-
-
-BlackAreaSaveSecond:
-    dBLACK_AREA_SECOND = dALPHABET
-    GOTO StateMilkPosionFind_1
-
-
-BlackAreaSaveThird:
-    dBLACK_AREA_THIRD = dALPHABET
-    GOTO StateMilkPosionFind_1
-
-
 StateMilkPosionFind_1:
 
-    GOSUB PostureHeadDown35
+    dHEAD_UD_ANGLE = 35
+    GOSUB PostureHeadDown
     DELAY 1000
 
     ETX 4800, cSIGNAL_IMAGE
     GOSUB UartRx
 
     IF rx_data = cMOTION_MILK_LOST THEN
-        GOSUB PostureHeadDown70
+        dHEAD_UD_ANGLE = 70
+        GOSUB PostureHeadDown
         DELAY 1000
         GOTO StateMilkPosionFind_3
 
     ELSEIF rx_data = cMOTION_MILK_CATCH THEN
         GOSUB MotionCatchMilk
-
-        GOTO Main
+        ETX 4800, cSIGNAL_STATE
+        GOTO StateMilkCarry
 
         'ETX 4800, cSIGNAL_STATE
 
@@ -1741,7 +1980,7 @@ StateMilkPosionFind_1:
 StateMilkPosionFind_2:
 
     IF rx_data = cMOTION_MILK_POSION_FRONT_BIG OR rx_data = cMOTION_MILK_CATCH THEN'전방하향 70도일 경우만
-        dWALK_NUMBER= 8
+        dWALK_NUMBER= 6
         GOSUB MotionCountWalk
 
     ELSEIF rx_data = cMOTION_MILK_POSION_FRONT_SMALL THEN
@@ -1765,13 +2004,42 @@ StateMilkPosionFind_3:
 
     IF rx_data = cMOTION_MILK_LOST THEN
 
-        IF dARROW = cMOTION_ARROW_RIGHT THEN
-            GOSUB MotionTurnRight20
-        ELSEIF dARROW = cMOTION_ARROW_LEFT THEN
-            GOSUB MotionTurnLeft20
-        ENDIF
+        IF dBLACK_AREA = 1 THEN
+            '우유곽 존재 x
+            IF dARROW = cMOTION_ARROW_RIGHT THEN
+                GOSUB MotionTurnRight20
+                GOSUB MotionTurnRight20
+                GOSUB MotionTurnRight20
 
-        GOTO StateMilkPosionFind_1
+            ELSEIF dARROW = cMOTION_ARROW_LEFT THEN
+                GOSUB MotionTurnLeft20
+                GOSUB MotionTurnLeft20
+                GOSUB MotionTurnLeft20
+
+            ENDIF
+
+            ETX 4800, cSIGNAL_STATE
+            GOTO StateCornerRecognition
+
+        ELSEIF dBLACK_AREA = 0 AND count = 0 THEN'45도 회전
+            IF dARROW = cMOTION_ARROW_RIGHT THEN
+                GOSUB MotionTurnRight20
+                GOSUB MotionTurnRight20
+
+            ELSEIF dARROW = cMOTION_ARROW_LEFT THEN
+                GOSUB MotionTurnLeft20
+                GOSUB MotionTurnLeft20
+
+            ENDIF
+
+            GOTO StateMilkPosionFind_1
+
+        ELSE '우유곽 존재 X
+            ETX 4800, cSIGNAL_STATE
+            GOTO StateCornerRecognition
+
+
+        ENDIF
 
     ELSE
         GOTO StateMilkPosionFind_2
@@ -1782,23 +2050,33 @@ StateMilkPosionFind_3:
 StateMilkCarry:
     ' 확진구역 바로 코너찾기
 
-    IF dBLACK_AREA = 1 THEN		
+    IF dBLACK_AREA = 1 THEN
+        'GOSUB '회전 180도
+        MUSIC "C"
+        ETX 4800, cSIGNAL_STATE
         GOTO StateCornerRecognition
 
-        ' 안전구역
-        ' 고개 돌려서 구역 위치 확인 후 회전해서 내려놓고 오기
+    ELSE
 
+        ETX 4800, cSIGNAL_IMAGE
+        GOSUB UartRx
 
+        IF rx_data = cMOTION_MILK_POSION_LEFT THEN
+            GOSUB MotionGoLeftSide20
 
+        ELSEIF rx_data = cMOTION_MILK_POSION_RIGHT THEN
+            GOSUB MotionGoRightSide20
 
-        GOSUB MotionPutMilk 	
+        ELSEIF rx_data = cMOTION_MILK_PUTDOWN THEN
+            GOSUB MotionPutMilk
+            'GOSUB '회전 180도
+            MUSIC "C"
+
+            GOTO StateCornerRecognition
+
+        ENDIF
 
     ENDIF
-
-    ETX 4800, cSIGNAL_IMAGE
-    GOSUB UartRx
-
-    GOTO StateCornerRecognition
 
 StateCornerRecognition:
     ' 걷는 모션이 다르다
@@ -1808,28 +2086,112 @@ StateCornerRecognition:
     ETX 4800, cSIGNAL_IMAGE
     GOSUB UartRx
 
-    IF rx_data = cMOTION_MILK_POSION_FRONT_BIG THEN
+    IF rx_data = cMOTION_LINE_MOVE_FRONT_BIG THEN
         dWALK_NUMBER= 4
-        GOSUB MotionCountWalk
 
-    ELSEIF rx_data = cMOTION_MILK_POSION_FRONT_SMALL THEN
-        dWALK_NUMBER= 1
-        GOSUB MotionCountWalk
+        IF dBLACK_AREA = 1 THEN
+            GOSUB MotionMilkWalk_low
+        ELSE
+            GOSUB MotionCountWalk
+        ENDIF
 
-    ELSEIF rx_data = cMOTION_MILK_POSION_LEFT THEN
-        GOSUB MotionGoLeftSide20
+    ELSEIF rx_data = cMOTION_LINE_MOVE_FRONT_SMALL THEN
+        dWALK_NUMBER= 4
 
-    ELSEIF rx_data = cMOTION_MILK_POSION_RIGHT THEN
-        GOSUB MotionGoRightSide20
+        IF dBLACK_AREA = 1 THEN
+            GOSUB MotionMilkWalk_low
+        ELSE
+            GOSUB MotionCountWalk
+        ENDIF
+
+    ELSEIF rx_data = cMOTION_LINE_MOVE_LEFT THEN
+        IF dBLACK_AREA = 1 THEN
+            GOSUB MotionGoLeftSide_Milk20
+        ELSE
+            GOSUB MotionGoLeftSide20
+        ENDIF
+
+    ELSEIF rx_data = cMOTION_LINE_MOVE_RIGHT THEN
+        IF dBLACK_AREA = 1 THEN
+            GOSUB MotionGoRightSide_Milk20
+        ELSE
+            GOSUB MotionGoRightSide20
+        ENDIF
 
     ENDIF
 
 
-    GOTO StateLineTracing1
 
-
-
+    GOTO StateCornerRecognition
     '확진 구역 발표!!!
+
+
+StateCornerRecognition_1:
+
+    dHEAD_UD_ANGLE = 35
+    GOSUB PostureHeadDown
+    DELAY 1000
+
+    ETX 4800, cSIGNAL_IMAGE
+    GOSUB UartRx
+
+    IF rx_data = cMOTION_LINE_LOST THEN
+        dHEAD_UD_ANGLE = 70
+        GOSUB PostureHeadDown
+        DELAY 1000
+        GOTO StateCornerRecognition_3
+
+    ELSEIF rx_data = cMOTION_LINE_CORNER THEN
+        GOSUB PostureInit
+
+        GOTO Main
+
+        'ETX 4800, cSIGNAL_STATE
+
+        'GOTO StateMilkCarry
+
+    ENDIF
+
+
+StateCornerRecognition_2:
+
+    IF rx_data = cMOTION_LINE_MOVE_FRONT_BIG OR rx_data = cMOTION_LINE_CORNER THEN'전방하향 70도일 경우만
+        dWALK_NUMBER= 8
+        GOSUB MotionCountWalk
+
+    ELSEIF rx_data = cMOTION_LINE_MOVE_FRONT_SMALL THEN
+        dWALK_NUMBER= 8
+        GOSUB MotionCountWalk
+
+    ELSEIF rx_data = cMOTION_LINE_MOVE_LEFT THEN
+        GOSUB MotionGoLeftSide20
+
+    ELSEIF rx_data = cMOTION_LINE_MOVE_RIGHT THEN
+        GOSUB MotionGoRightSide20
+
+    ENDIF
+
+    GOTO StateCornerRecognition_1
+
+
+StateCornerRecognition_3:
+    ETX 4800, cSIGNAL_IMAGE
+    GOSUB UartRx
+
+    IF rx_data = cMOTION_LINE_LOST THEN
+
+        IF dARROW = cMOTION_ARROW_RIGHT THEN
+            GOSUB MotionTurnRight20
+        ELSEIF dARROW = cMOTION_ARROW_LEFT THEN
+            GOSUB MotionTurnLeft20
+        ENDIF
+
+        GOTO StateCornerRecognition_1
+
+    ELSE
+        GOTO StateCornerRecognition_2
+
+    ENDIF
 
     '********** State End **********'
 
@@ -1899,16 +2261,17 @@ KEY8:
     GOSUB MotionTurnRight20
     GOTO UartConnectWait
 
-
     '****************************
 KEY9:
-    GOSUB PostureHeadDown30
+    dHEAD_UD_ANGLE = 100
+    GOSUB PostureHeadTurn
     GOTO UartConnectWait
 
 
     '****************************
 KEY10: '0
-    GOSUB PostureHeadDown100
+    dHEAD_LR_ANGLE = 100
+    GOSUB PostureHeadDown
     GOTO UartConnectWait
 
 
@@ -1916,7 +2279,7 @@ KEY10: '0
     '********************************
 
 KEY11: ' ▲
-    dWALK_NUMBER = 2
+    dWALK_NUMBER = 10
     GOSUB MotionCountWalk
     GOTO UartConnectWait
 
@@ -1951,6 +2314,7 @@ KEY14: ' ◀
     '********************************
 
 KEY15: ' A
+    GOSUB StateCornerRecognition_1
     GOTO UartConnectWait
 
 
@@ -1997,7 +2361,7 @@ KEY20: ' B
     '********************************
 
 KEY21: ' △
-	dWALK_NUMBER = 10
+    dWALK_NUMBER = 10
     GOSUB MotionMilkWalk_low
     GOTO UartConnectWait
 
@@ -2056,7 +2420,7 @@ KEY28: ' ◁
     '********************************
 
 KEY29: ' □
-	GOSUB MotionPutMilk
+    GOSUB MotionPutMilk
     GOTO UartConnectWait
 
 
@@ -2071,6 +2435,7 @@ KEY30: ' ▷
     '********************************
 
 KEY31: ' ▽
+    GOTO StateAreaRecognition
     GOTO UartConnectWait
 
 
@@ -2078,7 +2443,7 @@ KEY31: ' ▽
     '********************************
 
 KEY32: ' F
-    GOTO StateMilkPosionFind_1
-
+    'GOTO StateMilkPosionFind_1
+	GOTO UartConnectWait
 
     '********** Key End **********'
