@@ -665,9 +665,9 @@ MotionCountWalk_2_Stop:
     RETURN
 
     '****************************************
-    
+
 MotionMilkWalk_origin:
-	GOSUB MotorAllMode3
+    GOSUB MotorAllMode3
     dWALK_COUNT = 0
     SPEED 7
     HIGHSPEED SETON
@@ -695,14 +695,14 @@ MotionMilkWalk_origin:
 
 
 MotionMilkWalk_origin_1:
-	MOVE G6A,95,  90, 125, 100, 104
+    MOVE G6A,95,  90, 125, 100, 104
     MOVE G6D,104,  77, 147,  93,  102
     MOVE G6B, 85
     MOVE G6C,115
     WAIT
 
 
-	MOVE G6A,103,   73, 140, 103,  100
+    MOVE G6A,103,   73, 140, 103,  100
     MOVE G6D, 95,  85, 147,  85, 102
     WAIT
 
@@ -711,7 +711,7 @@ MotionMilkWalk_origin_1:
         dFALL_CHECK = 0
         GOTO MAIN
     ENDIF
-    
+
     dWALK_COUNT = dWALK_COUNT + 1
 
     IF dWALK_COUNT > dWALK_NUMBER THEN
@@ -721,22 +721,22 @@ MotionMilkWalk_origin_1:
         GOTO MotionMilkWalk_origin_2
 
     ENDIF
-    
-MotionMilkWalk_origin_1_stop: 
-    MOVE G6D,95,  90, 125, 95, 104
-        MOVE G6A,104,  76, 145,  91,  102
-        MOVE G6C, 100
-        MOVE G6B,100
-        WAIT
-        
-        HIGHSPEED SETOFF
-        SPEED 15
-        GOSUB PostureInit
-        SPEED 5
-        GOSUB PostureDefault
 
-        'DELAY 400
-      	RETURN
+MotionMilkWalk_origin_1_stop:
+    MOVE G6D,95,  90, 125, 95, 104
+    MOVE G6A,104,  76, 145,  91,  102
+    MOVE G6C, 100
+    MOVE G6B,100
+    WAIT
+
+    HIGHSPEED SETOFF
+    SPEED 15
+    GOSUB PostureInit
+    SPEED 5
+    GOSUB PostureDefault
+
+    'DELAY 400
+    RETURN
 
 MotionMilkWalk_origin_2:
     MOVE G6D,95,  95, 120, 100, 104
@@ -750,13 +750,13 @@ MotionMilkWalk_origin_2:
     WAIT
 
 
-     GOSUB CheckTiltFB
+    GOSUB CheckTiltFB
     IF dFALL_CHECK = 1 THEN
         dFALL_CHECK = 0
         GOTO MAIN
     ENDIF
-	
-	 dWALK_COUNT = dWALK_COUNT + 1
+
+     dWALK_COUNT = dWALK_COUNT + 1
 
     IF dWALK_COUNT > dWALK_NUMBER THEN
         GOTO MotionMilkWalk_origin_2_stop
@@ -766,14 +766,14 @@ MotionMilkWalk_origin_2:
 
     ENDIF
 
-  
+
 MotionMilkWalk_origin_2_stop:
     MOVE G6A,95,  90, 125, 95, 104
     MOVE G6D,104,  76, 145,  91,  102
     MOVE G6B, 100
     MOVE G6C,100
     WAIT
-    
+
     HIGHSPEED SETOFF
     SPEED 15
     GOSUB PostureInit
@@ -781,9 +781,9 @@ MotionMilkWalk_origin_2_stop:
     GOSUB PostureDefault
 
     'DELAY 400
- 	RETURN
+    RETURN
 
-	
+
     '****************************************
 MotionMilkWalk_high:
 
@@ -1293,7 +1293,7 @@ MotionTurnRight20:
     RETURN
 
 MotionTurnLeft60:
-	MOTORMODE G6A,3,3,3,3,2
+    MOTORMODE G6A,3,3,3,3,2
     MOTORMODE G6D,3,3,3,3,2
 
     SPEED 15
@@ -1308,11 +1308,11 @@ MotionTurnLeft60:
 
     SPEED 10
     GOSUB PostureInit
-    
+
     RETURN
-    
+
 MotionTurnRight60:
-	MOTORMODE G6A,3,3,3,3,2
+    MOTORMODE G6A,3,3,3,3,2
     MOTORMODE G6D,3,3,3,3,2
 
     SPEED 15
@@ -1328,8 +1328,8 @@ MotionTurnRight60:
 
     SPEED 10
     GOSUB PostureInit
-    
-    RETURN 
+
+    RETURN
 
     '****************************************
 MotionTurnLeftMilk20:
@@ -2444,6 +2444,6 @@ KEY31: ' ▽
 
 KEY32: ' F
     'GOTO StateMilkPosionFind_1
-	GOTO UartConnectWait
+    GOTO UartConnectWait
 
     '********** Key End **********'
