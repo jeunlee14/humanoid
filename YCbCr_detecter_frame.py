@@ -35,7 +35,7 @@ def setting_bar():
 
 if __name__ == '__main__':
 
-    image = cv2.imread('D://shots_2021-10-06 161217.615331.png', cv2.IMREAD_COLOR)
+    image = cv2.imread('D://shots_2021-10-11 174311.012592.png', cv2.IMREAD_COLOR)
     frame = cv2.GaussianBlur(image, (3, 3), 0)
 
     setting_bar()
