@@ -194,6 +194,14 @@ PostureDefault:
     WAIT
     RETURN
 
+PostureDefault2:
+    MOVE G6D, 100,  76, 145,  93, 100, 100
+    MOVE G6A, 100,  76, 145,  93, 100, 100
+    MOVE G6C, 100,  30,  80,
+    MOVE G6B, 100,  30,  80,
+    WAIT
+    RETURN
+
 PostureMilk:
     MOVE G6A, 100,  76, 145,  93, 100, 100
     MOVE G6D, 100,  76, 145,  93, 100, 100
@@ -531,6 +539,142 @@ MotionBackStandup:
     GOTO Main
 
     '****************************************
+MotionRun:
+    dFALL_CHECK = 0
+    GOSUB MotorAllMode3
+    dWALK_COUNT = 0
+    DELAY 50
+    SPEED 12
+    HIGHSPEED SETON
+
+    IF dWALK_ORDER = 0 THEN
+        dWALK_ORDER = 1
+        MOVE G6A,95,  76, 145,  93, 101
+        MOVE G6D,101,  77, 145,  93, 98
+        WAIT
+
+        MOVE G6A,95,  80, 120, 120, 104
+        MOVE G6D,104,  77, 146,  91,  102
+        MOVE G6B, 80
+        MOVE G6C,120
+        WAIT
+
+        GOTO MotionRun_2
+    ELSE
+        dWALK_ORDER = 0
+        MOVE G6D,95,  76, 145,  93, 101
+        MOVE G6A,101,  77, 145,  93, 98
+        WAIT
+
+        MOVE G6D,95,  80, 120, 120, 104
+        MOVE G6A,104,  77, 146,  91,  102
+        MOVE G6C, 80
+        MOVE G6B,120
+        WAIT
+
+        GOTO MotionRun_5
+    ENDIF
+
+
+    '**********************
+
+MotionRun_1:
+    MOVE G6A,95,  95, 100, 120, 104
+    MOVE G6D,104,  77, 147,  93,  102
+    MOVE G6B, 80
+    MOVE G6C,120
+    WAIT
+
+
+MotionRun_2:
+    MOVE G6A,95,  75, 122, 120, 104
+    MOVE G6D,104,  78, 147,  90,  100
+    WAIT
+
+    MOVE G6A,103,  69, 145, 103,  100
+    MOVE G6D, 95, 87, 160,  68, 102
+    WAIT
+
+    GOSUB CheckTiltFB
+    IF dFALL_CHECK = 1 THEN
+        dFALL_CHECK = 0
+        GOTO MAIN
+    ENDIF
+
+
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionRun_2_stop
+    ELSE
+        GOTO MotionRun_4
+    ENDIF
+MotionRun_2_stop:
+
+    MOVE G6D,90,  93, 115, 100, 104
+    MOVE G6A,104,  74, 145,  91,  102
+    MOVE G6C, 100
+    MOVE G6B,100
+    WAIT
+
+    HIGHSPEED SETOFF
+    SPEED 15
+    GOSUB PostureInit
+
+    SPEED 5
+    GOSUB PostureDefault
+
+    RETURN
+    '*********************************
+
+MotionRun_4:
+    MOVE G6D,95,  95, 100, 120, 104
+    MOVE G6A,104,  77, 147,  93,  102
+    MOVE G6C, 80
+    MOVE G6B,120
+    WAIT
+
+
+MotionRun_5:
+    MOVE G6D,95,  75, 122, 120, 104
+    MOVE G6A,104,  78, 147,  90,  100
+    WAIT
+
+    MOVE G6D,103,  69, 145, 103,  100
+    MOVE G6A, 95, 87, 160,  68, 102
+    WAIT
+
+    GOSUB CheckTiltFB
+    IF dFALL_CHECK = 1 THEN
+        dFALL_CHECK = 0
+        GOTO MAIN
+    ENDIF
+
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionRun_5_stop
+    ELSE
+        GOTO MotionRun_1
+
+    ENDIF
+MotionRun_5_stop:
+
+    MOVE G6A,90,  93, 115, 100, 104
+    MOVE G6D,104,  74, 145,  91,  102
+    MOVE G6B, 100
+    MOVE G6C,100
+    WAIT
+
+    HIGHSPEED SETOFF
+
+    SPEED 15
+    GOSUB PostureInit
+
+    SPEED 5
+    GOSUB PostureDefault
+
+    RETURN
 
 MotionCountWalk:
 
@@ -756,7 +900,7 @@ MotionCountWalk_origin_2:
         GOTO MAIN
     ENDIF
 
-     dWALK_COUNT = dWALK_COUNT + 1
+    dWALK_COUNT = dWALK_COUNT + 1
 
     IF dWALK_COUNT > dWALK_NUMBER THEN
         GOTO MotionCountWalk_origin_2_stop
@@ -1230,62 +1374,47 @@ MotionTurnRight10:
 MotionTurnLeft20:
     MOTORMODE G6A,3,3,3,3,2
     MOTORMODE G6D,3,3,3,3,2
+    SPEED 8
 
-    SPEED 6
-    'MOVE G6A,95,  96, 145,  73, 105, 100
-    '    MOVE G6D,95,  56, 145,  113, 105, 100
-    '    MOVE G6B,110
-    '    MOVE G6C,90
-    '    WAIT
+    MOVE G6D, 100,  56, 145, 113, 100,  100
+    MOVE G6A, 100,  96, 145,  73, 100,  100
+    MOVE G6B, 110
+    MOVE G6C,  90
 
-    MOVE G6A,  95,  96, 145,  73, 100,
-    MOVE G6D,  90,  61, 145, 113, 105,
-    MOVE G6B,110
-    MOVE G6C,90
+    SPEED 12
+    MOVE G6D,98,  56, 145,  113, 100, 100
+    MOVE G6A,98,  96, 145,  73, 100, 100
     WAIT
-
-    SPEED 10
-    MOVE G6A,  96,  96, 145,  73, 100,
-    MOVE G6D,  89, 61, 145, 113, 105,
-
-    'MOVE G6A,93,  96, 145,  73, 105, 100
-    '    MOVE G6D,93,  56, 145,  113, 105, 100
-    WAIT
-
     SPEED 6
-    MOVE G6A,101,  76, 146,  93, 98, 100
+
     MOVE G6D,101,  76, 146,  93, 98, 100
+    MOVE G6A,101,  76, 146,  93, 98, 100
     WAIT
 
-
-    GOSUB PostureDefault
+    GOSUB PostureDefault2
 
     RETURN
 
 MotionTurnRight20:
     MOTORMODE G6A,3,3,3,3,2
     MOTORMODE G6D,3,3,3,3,2
-
     SPEED 8
-    MOVE G6D,93,  96, 145,  73, 105, 100
-    MOVE G6A,95,  56, 145,  113, 105, 100
+
+    MOVE G6A,100,  56, 145,  113, 100, 100
+    MOVE G6D,100,  96, 145,  73, 100, 100
     MOVE G6B,90
     MOVE G6C,110
     WAIT
 
-    SPEED 6
-    MOVE G6D,93,  96, 145,  73, 105, 100
-    MOVE G6A,94,  56, 145,  113, 105, 100
-    WAIT
-
-    SPEED 7
-    MOVE G6D,93,  96, 145,  73, 105, 100
-    MOVE G6A,93,  56, 145,  113, 105, 100
+    SPEED 12
+    MOVE G6A,98,  56, 145,  113, 100, 100
+    MOVE G6D,98,  96, 145,  73, 100, 100
     WAIT
 
     SPEED 6
-    MOVE G6D,100,  76, 146,  93, 98, 100
     MOVE G6A,101,  76, 146,  93, 98, 100
+    MOVE G6D,101,  76, 146,  93, 98, 100
+
     WAIT
 
     GOSUB PostureDefault
@@ -2288,8 +2417,8 @@ KEY11: ' ▲
     '********************************
 
 KEY12: ' ▼
-    dWALK_NUMBER = 2
-    GOSUB MotionBackwardWalk
+    dWALK_NUMBER = 1
+    GOSUB MotionRun
     GOTO UartConnectWait
 
 
