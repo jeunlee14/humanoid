@@ -186,6 +186,14 @@ PostureInit:
     WAIT
     RETURN
 
+PostureInit2:
+    MOVE G6D, 100,  76, 145,  93, 100, 100
+    MOVE G6A, 100,  76, 145,  93, 100, 100
+    MOVE G6B, 100,  35,  90,
+    MOVE G6C, 100,  35,  90
+    WAIT
+    RETURN
+
 PostureDefault:
     MOVE G6A, 100,  76, 145,  93, 100, 100
     MOVE G6D, 100,  76, 145,  93, 100, 100
@@ -626,8 +634,11 @@ MotionRun_5_stop:
     RETURN
 
 MotionCountWalk:
-
-    dWALK_SPEED = 15
+	
+	dHEAD_UD_ANGLE = 30
+    GOSUB PostureHeadDown
+    
+    dWALK_SPEED = 13
     dFALL_CHECK = 0
     dWALK_COUNT = 0
 
@@ -638,8 +649,8 @@ MotionCountWalk:
     IF dWALK_ORDER = 0 THEN
         dWALK_ORDER = 1
 
-        MOVE G6A,95,  76, 147,  93, 101
-        MOVE G6D,101,  76, 147,  93, 98
+        MOVE G6D,95,  76, 147,  93, 95
+        MOVE G6A,101,  76, 147,  93, 98
         MOVE G6B,100
         MOVE G6C,100
         WAIT
@@ -649,11 +660,10 @@ MotionCountWalk:
     ELSE
         dWALK_ORDER = 0
 
-        MOVE G6D,95,  76, 147,  93, 101
-        MOVE G6A,101,  76, 147,  93, 98
+        MOVE G6A,95,  76, 147,  93, 95
+        MOVE G6D,101,  76, 147,  93, 98
         MOVE G6B,100
         MOVE G6C,100
-        WAIT
 
         GOTO MotionCountWalk_2
 
@@ -663,8 +673,8 @@ MotionCountWalk:
     '************************************	
 
 MotionCountWalk_1:
-    MOVE G6A,95,  90, 125, 100, 104
-    MOVE G6D,104,  77, 147,  93,  102
+    MOVE G6A,85,  90, 125, 100, 109
+    MOVE G6D,104,  77, 147,  93,  97
     MOVE G6B, 85
     MOVE G6C, 115
     WAIT
@@ -672,14 +682,6 @@ MotionCountWalk_1:
     MOVE G6A,103,   73, 140, 103,  100
     MOVE G6D, 95,  85, 147,  85, 102
     WAIT
-
-
-    GOSUB CheckTiltFB
-    IF dFALL_CHECK = 1 THEN
-        dFALL_CHECK = 0
-        GOTO MAIN
-    ENDIF
-
 
     dWALK_COUNT = dWALK_COUNT + 1
 
@@ -693,18 +695,21 @@ MotionCountWalk_1:
 
 
 MotionCountWalk_1_Stop:
-    MOVE G6D,95,  90, 125, 95, 104
-    MOVE G6A,104,  76, 145,  91,  102
+	
+	SPEED 9
+	
+    MOVE G6D,85,  90, 125, 95, 104
+    MOVE G6A,102,  76, 145,  91,  102
     MOVE G6C, 100
     MOVE G6B,100
     WAIT
 
 
-    SPEED 12
-    GOSUB PostureInit
+    SPEED 7
+    GOSUB PostureInit2
 
     SPEED 4
-    GOSUB PostureDefault
+    GOSUB PostureDefault2
 
 
     RETURN
@@ -712,8 +717,8 @@ MotionCountWalk_1_Stop:
     '************************************
 
 MotionCountWalk_2:
-    MOVE G6D,95,  90, 125, 100, 104
-    MOVE G6A,104,  77, 147,  93,  102
+    MOVE G6D,85,  90, 125, 100, 109
+    MOVE G6A,104,  77, 147,  93,  97
     MOVE G6C, 85
     MOVE G6B,115
     WAIT
@@ -721,14 +726,6 @@ MotionCountWalk_2:
     MOVE G6D,103,    73, 140, 103,  100
     MOVE G6A, 95,  85, 147,  85, 102
     WAIT
-
-
-    GOSUB CheckTiltFB
-    IF dFALL_CHECK = 1 THEN
-        dFALL_CHECK = 0
-        GOTO MAIN
-    ENDIF
-
 
     dWALK_COUNT = dWALK_COUNT + 1
 
@@ -742,13 +739,14 @@ MotionCountWalk_2:
 
 
 MotionCountWalk_2_Stop:
-    MOVE G6A,95,  90, 125, 95, 104
-    MOVE G6D,104,  76, 145,  91,  102
+	SPEED 9
+    MOVE G6A,85,  90, 125, 95, 104
+    MOVE G6D,102,  76, 145,  91,  102
     MOVE G6B, 100
     MOVE G6C,100
     WAIT
 
-    SPEED 12
+    SPEED 7
     GOSUB PostureInit
 
     SPEED 4
@@ -870,10 +868,10 @@ MotionCountWalk_origin_2_stop:
     HIGHSPEED SETOFF
     SPEED 15
     GOSUB PostureInit
-    
+
     SPEED 5
     GOSUB PostureDefault
-    
+
     RETURN
 
 
@@ -891,8 +889,8 @@ MotionMilkWalk_high:
     IF dWALK_ORDER = 0 THEN
         dWALK_ORDER = 1
 
-        MOVE G6A,95,  76, 147,  88, 101
-        MOVE G6D,101,  76, 147,  88, 98
+        MOVE G6D,95,  76, 147,  88, 101
+        MOVE G6A,101,  76, 147,  88, 98
         MOVE G6B, 190,  15,  55,  ,  ,
         MOVE G6C, 190,  15,  55,  ,  ,
         WAIT
@@ -944,7 +942,7 @@ MotionMilkWalk_high_1_Stop:
 
     SPEED 15
     GOSUB PostureMilk2
-    
+
     SPEED 4
     GOSUB PostureMilk2
 
@@ -2258,6 +2256,16 @@ StateCornerRecognition_3:
 Main:
     GOSUB Initiate
 
+    DELAY 5000
+
+    dWALK_NUMBER = 5
+    GOSUB MotionCountWalk
+
+    DELAY 5000
+
+    dWALK_NUMBER = 10
+    GOSUB MotionCountWalk
+
     'GOTO StateDirectionRecognition
     'GOSUB PostureHeadDown100
     'GOTO StateMilkPosionFind_1
@@ -2275,7 +2283,7 @@ Main_2:
     ELSE
         MUSIC "c"
         MUSIC "c"
-    	GOSUB UartRx
+        GOSUB UartRx
     ENDIF
 
     '********** Main End **********'
