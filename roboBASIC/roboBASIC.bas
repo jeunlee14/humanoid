@@ -210,6 +210,14 @@ PostureMilk:
     WAIT
     RETURN
 
+PostureMilk2:
+    MOVE G6D, 100,  76, 145,  93, 100, 100
+    MOVE G6A, 100,  76, 145,  93, 100, 100
+    MOVE G6B, 190,  15,  55,  ,  ,
+    MOVE G6C, 190,  15,  55,  ,  ,
+    WAIT
+    RETURN
+
 PostureSit:
     GOSUB GyroOff
 
@@ -229,35 +237,6 @@ PostureHeadTurn:
     WAIT
     RETURN
 
-    'PostureHeadLeft55:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 11, 90
-    '    WAIT
-    '    RETURN
-    '
-    'PostureHeadLeft80:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 11, 10
-    '    WAIT
-    '    RETURN
-    '
-    'PostureHeadRight10:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 11, 110
-    '    WAIT
-    '    RETURN
-    '
-    'PostureHeadRight45:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 11, 145
-    '    WAIT
-    '    RETURN
-    '
-    'PostureHeadRight80:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 11, 180
-    '    WAIT
-    '    RETURN
     '****************************************
 
 PostureHeadDown:
@@ -265,36 +244,6 @@ PostureHeadDown:
     SERVO 16, dHEAD_UD_ANGLE
     WAIT
     RETURN
-    '
-    'PostureHeadDown35:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 16, 35
-    '    WAIT
-    '    RETURN
-    '
-    'PostureHeadDown70:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 16, 70
-    '    WAIT
-    '    RETURN
-    '
-    'PostureHeadDown80:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 16, 80
-    '    WAIT
-    '    RETURN
-    '
-    'PostureHeadDown86:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 16, 86
-    '    WAIT
-    '    RETURN
-    '
-    'PostureHeadDown100:
-    '    SPEED cHEAD_SPEED
-    '    SERVO 16, 100
-    '    WAIT
-    '    RETURN
 
     '********** Posture Setting End **********'
 
@@ -921,17 +870,17 @@ MotionCountWalk_origin_2_stop:
     HIGHSPEED SETOFF
     SPEED 15
     GOSUB PostureInit
+    
     SPEED 5
     GOSUB PostureDefault
-
-    'DELAY 400
+    
     RETURN
 
 
     '****************************************
 MotionMilkWalk_high:
 
-    dWALK_SPEED = 7
+    dWALK_SPEED = 10
     dFALL_CHECK = 0
     dWALK_COUNT = 0
 
@@ -942,25 +891,22 @@ MotionMilkWalk_high:
     IF dWALK_ORDER = 0 THEN
         dWALK_ORDER = 1
 
-        MOVE G6A,95,  76, 147,  83, 101
-        MOVE G6D,101,  76, 147,  83, 98
+        MOVE G6A,95,  76, 147,  88, 101
+        MOVE G6D,101,  76, 147,  88, 98
         MOVE G6B, 190,  15,  55,  ,  ,
         MOVE G6C, 190,  15,  55,  ,  ,
         WAIT
 
-        WAIT
 
         GOTO MotionMilkWalk_high_1
 
     ELSE
         dWALK_ORDER = 0
 
-        MOVE G6A,95,  76, 147,  83, 101
-        MOVE G6D,101,  76, 147,  83, 98
+        MOVE G6D,101,  76, 147,  88, 98
+        MOVE G6A,95,  76, 147,  88, 101
         MOVE G6B, 190,  15,  55,  ,  ,
         MOVE G6C, 190,  15,  55,  ,  ,
-        WAIT
-
         WAIT
 
         GOTO MotionMilkWalk_high_2
@@ -971,21 +917,14 @@ MotionMilkWalk_high:
     '************************************	
 
 MotionMilkWalk_high_1:
-    MOVE G6A,95,  90, 125, 90, 104
-    MOVE G6D,104,  77, 147,  83,  102
-    WAIT
-
-    MOVE G6A,103,   73, 140, 93,  100
-    MOVE G6D, 95,  85, 147,  75, 102
+    MOVE G6A,  90,  90, 125,  95, 109,
+    MOVE G6D, 104,  77, 147,  88,  97,
     WAIT
 
 
-    GOSUB CheckTiltFB
-    IF dFALL_CHECK = 1 THEN
-        dFALL_CHECK = 0
-        GOTO MAIN
-    ENDIF
-
+    MOVE G6A,103,   73, 140, 98,  100
+    MOVE G6D, 95,  85, 147,  80, 102
+    WAIT
 
     dWALK_COUNT = dWALK_COUNT + 1
 
@@ -999,38 +938,33 @@ MotionMilkWalk_high_1:
 
 
 MotionMilkWalk_high_1_Stop:
-    MOVE G6D,95,  90, 125, 85, 104
-    MOVE G6A,104,  76, 145,  81,  102
+    MOVE G6D,85,  90, 125, 95, 104
+    MOVE G6A,102,  76, 145,  91,  102
     WAIT
 
-
-    SPEED 12
-    GOSUB PostureMilk
-
-    '    SPEED 4
-    '    GOSUB PostureDefault
-
+    SPEED 15
+    GOSUB PostureMilk2
+    
+    SPEED 4
+    GOSUB PostureMilk2
 
     RETURN
 
     '************************************
 
 MotionMilkWalk_high_2:
-    MOVE G6D,95,  90, 125, 90, 104
-    MOVE G6A,104,  77, 147,  83,  102
-    WAIT
-
-    MOVE G6D,103,    73, 140, 93,  100
-    MOVE G6A, 95,  85, 147,  75, 102
+    MOVE G6D,  90,  90, 125,  95, 109,
+    MOVE G6A, 104,  77, 147,  88,  97,
     WAIT
 
 
-    GOSUB CheckTiltFB
-    IF dFALL_CHECK = 1 THEN
-        dFALL_CHECK = 0
-        GOTO MAIN
-    ENDIF
+    'MOVE G6D,95,  90, 125, 95, 104
+    'MOVE G6A,104,  77, 147,  88,  102
+    'WAIT
 
+    MOVE G6D,103,    73, 140, 98,  100
+    MOVE G6A, 95,  85, 147,  80, 102
+    WAIT
 
     dWALK_COUNT = dWALK_COUNT + 1
 
@@ -1044,16 +978,15 @@ MotionMilkWalk_high_2:
 
 
 MotionMilkWalk_high_2_Stop:
-    MOVE G6A,95,  90, 125, 85, 104
-    MOVE G6D,104,  76, 145,  81,  102
+    MOVE G6A, 85,  90, 125, 95, 104
+    MOVE G6D,102,  76, 145,  91,  102
     WAIT
 
-    SPEED 12
+    SPEED 15
     GOSUB PostureMilk
 
-    '    SPEED 4
-    '    GOSUB PostureDefault
-
+    SPEED 4
+    GOSUB PostureMilk
 
     RETURN
 
@@ -1804,20 +1737,16 @@ Initiate:
     RETURN
 
 UartRx:
-    DELAY 10
-    ERX 4800, rx_data, UartRx
-    RETURN
+    rx_data = 0
 
-UartRx_2:
+    ERX 4800, rx_data, UartRx
+
     RETURN
 
 UartConnectWait:
     ERX 4800, rx_data, UartConnectWait
 
-    IF rx_data = cSIGNAL_CHECK THEN
-        RETURN
-
-    ELSEIF rx_data < &H40 THEN
+    IF rx_data < &H40 THEN
         GOTO Main_2
     ENDIF
 
@@ -2328,7 +2257,7 @@ StateCornerRecognition_3:
 
 Main:
     GOSUB Initiate
-    GOSUB UartRx
+
     'GOTO StateDirectionRecognition
     'GOSUB PostureHeadDown100
     'GOTO StateMilkPosionFind_1
@@ -2337,8 +2266,17 @@ Main:
     'GOSUB MotionCountWalk
 
 Main_2:
+    GOSUB UartRx
 
-    ON rx_data GOTO Main, KEY1,KEY2,KEY3,KEY4,KEY5,KEY6,KEY7,KEY8,KEY9,KEY10,KEY11,KEY12,KEY13,KEY14,KEY15,KEY16,KEY17,KEY18,KEY19,KEY20,KEY21,KEY22,KEY23,KEY24,KEY25,KEY26,KEY27,KEY28,KEY29,KEY30,KEY31,KEY32
+    IF rx_data < 40 THEN
+        MUSIC "c"
+        ON rx_data GOTO Main_2, KEY1,KEY2,KEY3,KEY4,KEY5,KEY6,KEY7,KEY8,KEY9,KEY10,KEY11,KEY12,KEY13,KEY14,KEY15,KEY16,KEY17,KEY18,KEY19,KEY20,KEY21,KEY22,KEY23,KEY24,KEY25,KEY26,KEY27,KEY28,KEY29,KEY30,KEY31,KEY32
+
+    ELSE
+        MUSIC "c"
+        MUSIC "c"
+    	GOSUB UartRx
+    ENDIF
 
     '********** Main End **********'
 
@@ -2346,62 +2284,60 @@ Main_2:
     '****************************
 KEY1:
     GOSUB PostureInit
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
 KEY2:
     GOSUB MotionGoLeftSide20
-    GOTO UartConnectWait
-
+    GOTO Main_2
 
     '****************************
 KEY3:
     GOSUB MotionGoRightSide20
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
 KEY4:
     GOSUB MotionOpenDoor
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
 KEY5:
     GOSUB MotionTurnLeft10
-    GOTO UartConnectWait
-
+    GOTO Main_2
 
     '****************************
 KEY6:
     GOSUB MotionTurnRight10
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
 KEY7:
     GOSUB MotionTurnLeft20
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
 KEY8:
     GOSUB MotionTurnRight20
-    GOTO UartConnectWait
+    GOTO Main_2
 
     '****************************
 KEY9:
-    dHEAD_UD_ANGLE = 100
-    GOSUB PostureHeadTurn
-    GOTO UartConnectWait
+    dHEAD_UD_ANGLE = 30
+    GOSUB PostureHeadDown
+    GOTO Main_2
 
 
     '****************************
 KEY10: '0
     dHEAD_LR_ANGLE = 100
-    GOSUB PostureHeadDown
-    GOTO UartConnectWait
+    GOSUB PostureHeadTurn
+    GOTO Main_2
 
 
     '****************************
@@ -2410,7 +2346,7 @@ KEY10: '0
 KEY11: ' ▲
     dWALK_NUMBER = 10
     GOSUB MotionCountWalk
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
@@ -2419,7 +2355,7 @@ KEY11: ' ▲
 KEY12: ' ▼
     dWALK_NUMBER = 1
     GOSUB MotionRun
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
 
@@ -2427,16 +2363,16 @@ KEY12: ' ▼
     '********************************
 
 KEY13: ' ▶
-    GOSUB MotionTurnRightMilk20
-    GOTO UartConnectWait
+    GOSUB MotionGoRightSide20
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY14: ' ◀
-    GOSUB MotionTurnLeftMilk20
-    GOTO UartConnectWait
+    GOSUB MotionGoLeftSide20
+    GOTO Main_2
 
 
     '****************************
@@ -2444,21 +2380,21 @@ KEY14: ' ◀
 
 KEY15: ' A
     GOSUB StateCornerRecognition_1
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY16: ' POWER
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY17: ' C
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
 
@@ -2466,16 +2402,17 @@ KEY17: ' C
     '********************************
 
 KEY18: ' E
-    dWALK_NUMBER = 10
+    MUSIC "c"
+    dWALK_NUMBER = 5
     GOSUB MotionMilkWalk_high
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY19: ' P2
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
 
@@ -2483,7 +2420,7 @@ KEY19: ' P2
     '********************************
 
 KEY20: ' B	
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
@@ -2492,13 +2429,13 @@ KEY20: ' B
 KEY21: ' △
     dWALK_NUMBER = 10
     GOSUB MotionMilkWalk_low
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 KEY22: ' *	
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
@@ -2506,21 +2443,21 @@ KEY22: ' *
 
 KEY23: ' G
     GOSUB MotionCatchMilk
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY24: ' #
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY25: ' P1
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
@@ -2528,21 +2465,21 @@ KEY25: ' P1
 
 KEY26: ' ■
     GOSUB PostureSit
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY27: ' D
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY28: ' ◁
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
@@ -2550,14 +2487,14 @@ KEY28: ' ◁
 
 KEY29: ' □
     GOSUB MotionPutMilk
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
     '********************************
 
 KEY30: ' ▷
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
@@ -2565,7 +2502,7 @@ KEY30: ' ▷
 
 KEY31: ' ▽
     GOTO StateAreaRecognition
-    GOTO UartConnectWait
+    GOTO Main_2
 
 
     '****************************
@@ -2573,6 +2510,6 @@ KEY31: ' ▽
 
 KEY32: ' F
     'GOTO StateMilkPosionFind_1
-    GOTO UartConnectWait
+    GOTO Main_2
 
     '********** Key End **********'
