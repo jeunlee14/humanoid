@@ -634,10 +634,10 @@ MotionRun_5_stop:
     RETURN
 
 MotionCountWalk:
-	
-	dHEAD_UD_ANGLE = 30
+
+    dHEAD_UD_ANGLE = 30
     GOSUB PostureHeadDown
-    
+
     dWALK_SPEED = 13
     dFALL_CHECK = 0
     dWALK_COUNT = 0
@@ -695,9 +695,9 @@ MotionCountWalk_1:
 
 
 MotionCountWalk_1_Stop:
-	
-	SPEED 9
-	
+
+    SPEED 9
+
     MOVE G6D,85,  90, 125, 95, 104
     MOVE G6A,102,  76, 145,  91,  102
     MOVE G6C, 100
@@ -739,7 +739,7 @@ MotionCountWalk_2:
 
 
 MotionCountWalk_2_Stop:
-	SPEED 9
+    SPEED 9
     MOVE G6A,85,  90, 125, 95, 104
     MOVE G6D,102,  76, 145,  91,  102
     MOVE G6B, 100
@@ -1560,6 +1560,126 @@ MotionGoRightSide_Milk20:
 
     '****************************************
 
+MotionGoLeftSide50:
+    GOSUB MotorAllMode3
+
+    SPEED 4
+    MOVE G6A, 88,  71, 152,  91, 110, '60
+    MOVE G6D,108,  76, 146,  93,  92, '60
+    MOVE G6B,100,  40,  80
+    MOVE G6C,100,  40,  80
+    WAIT
+
+    SPEED 6
+    MOVE G6A, 90,  80, 140, 95, 114, 100
+    MOVE G6D,112,  76, 146,  93, 98, 100
+    MOVE G6B,100,  40,  80
+    MOVE G6C,100,  40,  80
+    WAIT
+
+
+    SPEED 6
+    MOVE G6D,110,  92, 124,  97,  93,  100
+    MOVE G6A, 76,  72, 160,  77, 128,  100
+    MOVE G6B,100,  40,  80, , , ,
+    MOVE G6C,100,  40,  80, , , ,
+    WAIT
+
+    SPEED 6
+    MOVE G6A,94,  76, 145,  93, 106, 100
+    MOVE G6D,94,  76, 145,  93, 106, 100
+    MOVE G6B,100,  40,  80
+    MOVE G6C,100,  40,  80
+    WAIT	
+    '***********************
+    SPEED 6
+    MOVE G6A,110,  92, 124,  97,  93,  100
+    MOVE G6D, 76,  72, 160,  82, 120,  100
+    MOVE G6B,100,  40,  80, , , ,
+    MOVE G6C,100,  40,  80, , , ,
+    WAIT
+
+    SPEED 5
+    MOVE G6D, 85,  80, 140, 95, 110, 100
+    MOVE G6A,112,  76, 146,  93, 98, 100
+    MOVE G6B,100,  40,  80
+    MOVE G6C,100,  40,  80
+    WAIT
+
+    SPEED 4
+    MOVE G6D, 88,  71, 152,  91, 110, '60
+    MOVE G6A,108,  76, 146,  93,  92, '60
+    MOVE G6B,100,  40,  80
+    MOVE G6C,100,  40,  80
+    WAIT
+
+    SPEED 1
+    GOSUB PostureDefault
+    GOSUB MotorAllMode1	
+    RETURN
+
+    '**********************************************
+
+MotionGoRightSide50:
+
+    GOSUB MotorAllMode3
+
+    SPEED 4
+    MOVE G6D, 88,  71, 152,  91, 110, '60
+    MOVE G6A,108,  76, 146,  93,  92, '60
+    MOVE G6C,100,  40,  80
+    MOVE G6B,100,  40,  80
+    WAIT
+
+    SPEED 6
+    MOVE G6D, 85,  80, 140, 95, 114, 100
+    MOVE G6A,112,  76, 146,  93, 98, 100
+    MOVE G6C,100,  40,  80
+    MOVE G6B,100,  40,  80
+    WAIT
+
+
+    SPEED 6
+    MOVE G6A,110,  92, 124,  97,  93,  100
+    MOVE G6D, 76,  72, 160,  77, 128,  100
+    MOVE G6C,100,  40,  80, , , ,
+    MOVE G6B,100,  40,  80, , , ,
+    WAIT
+
+    SPEED 6
+    MOVE G6D,94,  76, 145,  93, 106, 100
+    MOVE G6A,94,  76, 145,  93, 106, 100
+    MOVE G6C,100,  40,  80
+    MOVE G6B,100,  40,  80
+    WAIT	
+    '***********************
+    SPEED 6
+    MOVE G6D,110,  92, 124,  97,  93,  100
+    MOVE G6A, 76,  72, 160,  82, 120,  100
+    MOVE G6C,100,  40,  80, , , ,
+    MOVE G6B,100,  40,  80, , , ,
+    WAIT
+
+    SPEED 5
+    MOVE G6A, 90,  80, 140, 95, 110, 100
+    MOVE G6D,112,  76, 146,  93, 98, 100
+    MOVE G6C,100,  40,  80
+    MOVE G6B,100,  40,  80
+    WAIT
+
+    SPEED 4
+    MOVE G6A, 88,  71, 152,  91, 110, '60
+    MOVE G6D,108,  76, 146,  93,  92, '60
+    MOVE G6C,100,  40,  80
+    MOVE G6B,100,  40,  80
+    WAIT
+
+    SPEED 1
+    GOSUB PostureDefault2
+    GOSUB MotorAllMode1	
+    RETURN
+    '************************************************
+
 MotionCatchMilk:
 
     GOSUB MotorLegMode3
@@ -2255,16 +2375,17 @@ StateCornerRecognition_3:
 
 Main:
     GOSUB Initiate
-
-    DELAY 5000
-
-    dWALK_NUMBER = 5
-    GOSUB MotionCountWalk
-
-    DELAY 5000
-
-    dWALK_NUMBER = 10
-    GOSUB MotionCountWalk
+	
+	GOSUB MotorAllMode3
+    'DELAY 5000
+    '
+    '    dWALK_NUMBER = 5
+    '    GOSUB MotionCountWalk
+    '
+    '    DELAY 5000
+    '
+    '    dWALK_NUMBER = 10
+    '    GOSUB MotionCountWalk
 
     'GOTO StateDirectionRecognition
     'GOSUB PostureHeadDown100
@@ -2277,7 +2398,7 @@ Main_2:
     GOSUB UartRx
 
     IF rx_data < 40 THEN
-        MUSIC "c"
+        'MUSIC "c"
         ON rx_data GOTO Main_2, KEY1,KEY2,KEY3,KEY4,KEY5,KEY6,KEY7,KEY8,KEY9,KEY10,KEY11,KEY12,KEY13,KEY14,KEY15,KEY16,KEY17,KEY18,KEY19,KEY20,KEY21,KEY22,KEY23,KEY24,KEY25,KEY26,KEY27,KEY28,KEY29,KEY30,KEY31,KEY32
 
     ELSE
@@ -2298,6 +2419,7 @@ KEY1:
     '****************************
 KEY2:
     GOSUB MotionGoLeftSide20
+    MUSIC "c"
     GOTO Main_2
 
     '****************************
@@ -2371,7 +2493,7 @@ KEY12: ' ▼
     '********************************
 
 KEY13: ' ▶
-    GOSUB MotionGoRightSide20
+    GOSUB MotionGoRightSide50
     GOTO Main_2
 
 
@@ -2379,7 +2501,7 @@ KEY13: ' ▶
     '********************************
 
 KEY14: ' ◀
-    GOSUB MotionGoLeftSide20
+    GOSUB MotionGoLeftSide50
     GOTO Main_2
 
 
