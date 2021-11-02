@@ -75,6 +75,8 @@ DIM dINFRARED_dISTANCE_VALUE AS BYTE
 DIM dHEAD_LR_ANGLE AS BYTE
 DIM dHEAD_UD_ANGLE AS BYTE
 DIM count AS BYTE
+DIM mode AS BYTE
+
 '********** Potocol Value End **********'
 dWALK_ORDER = 0
 dARROW = &HA1
@@ -878,7 +880,7 @@ MotionCountWalk_origin_2_stop:
     '****************************************
 MotionMilkWalk_high:
 
-    dWALK_SPEED = 10
+    dWALK_SPEED = 9
     dFALL_CHECK = 0
     dWALK_COUNT = 0
 
@@ -991,7 +993,7 @@ MotionMilkWalk_high_2_Stop:
 
 MotionMilkWalk_low:
 
-    dWALK_SPEED = 7
+    dWALK_SPEED = 8
     dFALL_CHECK = 0
     dWALK_COUNT = 0
 
@@ -1302,6 +1304,53 @@ MotionTurnRight10:
 
     RETURN
 
+    '**********************************************
+
+MotionTurnLeft10_2:
+
+    SPEED 5
+    MOVE G6A,97,  86, 145,  75, 103, 100
+    MOVE G6D,97,  66, 145,  95, 103, 100
+    WAIT
+
+    SPEED 12
+    MOVE G6A,94,  86, 145,  75, 101, 100
+    MOVE G6D,94,  66, 145,  95, 101, 100
+    WAIT
+
+    SPEED 6
+    MOVE G6A,101,  76, 146,  85, 98, 100
+    MOVE G6D,101,  76, 146,  85, 98, 100
+    WAIT
+
+    MOVE G6A,100,  76, 145,  85, 100
+    MOVE G6D,100,  76, 145,  85, 100
+    WAIT
+    RETURN
+
+MotionTurnRight10_2:
+
+    SPEED 5
+    MOVE G6A,97,  66, 145,  95, 103, 100
+    MOVE G6D,97,  86, 145,  75, 103, 100
+    WAIT
+
+    SPEED 12
+    MOVE G6A,94,  66, 145,  95, 101, 100
+    MOVE G6D,94,  86, 145,  75, 101, 100
+    WAIT
+    SPEED 6
+    MOVE G6A,101,  76, 146,  85, 98, 100
+    MOVE G6D,101,  76, 146,  85, 98, 100
+    WAIT
+
+    MOVE G6A,100,  76, 145,  85, 100
+    MOVE G6D,100,  76, 145,  85, 100
+    WAIT
+    RETURN
+
+    '**********************************************
+
 MotionTurnLeft20:
     MOTORMODE G6A,3,3,3,3,2
     MOTORMODE G6D,3,3,3,3,2
@@ -1347,6 +1396,100 @@ MotionTurnRight20:
     MOVE G6D,101,  76, 146,  93, 98, 100
 
     WAIT
+
+    GOSUB PostureDefault
+
+    RETURN
+
+    '**********************************************
+
+MotionTurnLeft20_2:
+
+    GOSUB MotorLegMode2
+    SPEED 8
+    MOVE G6A,95,  96, 145,  65, 105, 100
+    MOVE G6D,95,  56, 145,  105, 105, 100
+    WAIT
+
+    SPEED 12
+    MOVE G6A,93,  96, 145,  65, 105, 100
+    MOVE G6D,93,  56, 145,  105, 105, 100
+    WAIT
+    SPEED 6
+    MOVE G6A,101,  76, 146,  85, 98, 100
+    MOVE G6D,101,  76, 146,  85, 98, 100
+    WAIT
+
+    MOVE G6A,100,  76, 145,  85, 100
+    MOVE G6D,100,  76, 145,  85, 100
+    WAIT
+
+    GOSUB MotorLegMode1
+    RETURN
+
+    '**********************************************
+MotionTurnRight20_2:
+
+    GOSUB MotorLegMode2
+    SPEED 8
+    MOVE G6A,95,  56, 145,  105, 105, 100
+    MOVE G6D,95,  96, 145,  65, 105, 100
+    WAIT
+
+    SPEED 12
+    MOVE G6A,93,  56, 145,  105, 105, 100
+    MOVE G6D,93,  96, 145,  65, 105, 100
+    WAIT
+
+    SPEED 6
+    MOVE G6A,101,  76, 146,  85, 98, 100
+    MOVE G6D,101,  76, 146,  85, 98, 100
+    WAIT
+
+    MOVE G6A,100,  76, 145,  85, 100
+    MOVE G6D,100,  76, 145,  85, 100
+    WAIT
+
+    GOSUB MotorLegMode1
+    RETURN
+
+MotionTurnLeft45:
+
+    GOSUB MotorLegMode2
+    SPEED 8
+    MOVE G6A,95,  106, 145,  63, 105, 100
+    MOVE G6D,95,  46, 145,  123, 105, 100
+    MOVE G6B,115
+    MOVE G6C,85
+    WAIT
+
+    SPEED 10
+    MOVE G6A,93,  106, 145,  63, 105, 100
+    MOVE G6D,93,  46, 145,  123, 105, 100
+    WAIT
+
+    SPEED 8
+
+    GOSUB PostureDefault
+
+    RETURN
+
+MotionTurnRight45:
+
+    GOSUB MotorLegMode2
+    SPEED 8
+    MOVE G6A,95,  46, 145,  123, 105, 100
+    MOVE G6D,95,  106, 145,  63, 105, 100
+    MOVE G6C,115
+    MOVE G6B,85
+    WAIT
+
+    SPEED 10
+    MOVE G6A,93,  46, 145,  123, 105, 100
+    MOVE G6D,93,  106, 145,  63, 105, 100
+    WAIT
+
+    SPEED 8
 
     GOSUB PostureDefault
 
@@ -1560,6 +1703,7 @@ MotionGoRightSide_Milk20:
 
     '****************************************
 
+
 MotionGoLeftSide50:
     GOSUB MotorAllMode3
 
@@ -1619,6 +1763,70 @@ MotionGoLeftSide50:
     RETURN
 
     '**********************************************
+물건집기:
+    GOSUB MotorAllMode3
+    SPEED 5
+    MOVE G6A,100,  33, 188,  155, 100
+    MOVE G6D,100,  33, 188,  155, 100
+    MOVE G6B,185,  35,  80
+    MOVE G6C,185,  35,  80
+    WAIT
+
+    '**** 잡는간격조절 ************
+    MOVE G6B,185,  15,  60
+    MOVE G6C,185,  15,  60
+    WAIT
+
+    SPEED 4
+    MOVE G6A,100,  33, 170,  155, 100
+    MOVE G6D,100,  33, 170,  155, 100
+    WAIT
+
+    SPEED 5
+    MOVE G6A,100,  60, 150,  115, 100
+    MOVE G6D,100,  60, 150,  115, 100
+    WAIT
+
+    SPEED 6
+    MOVE G6A,100,  76, 145,  85, 100
+    MOVE G6D,100,  76, 145,  85, 100
+    WAIT
+
+    GOSUB MotorLegMode1
+    RETURN
+    '************************************************
+    '************************************************
+물건놓기:
+    GOSUB MotorAllMode3
+    SPEED 5
+    MOVE G6A,100,  35, 170,  155, 100
+    MOVE G6D,100,  35, 170,  155, 100
+    WAIT
+
+    DELAY 300
+
+    MOVE G6B,185,  40,  80
+    MOVE G6C,185,  40,  80
+    WAIT
+
+    SPEED 5
+    MOVE G6A,100,  65, 150,  105, 100
+    MOVE G6D,100,  65, 150,  105, 100
+    MOVE G6B,140,  40,  80
+    MOVE G6C,140,  40,  80
+    WAIT
+
+
+    SPEED 6
+    MOVE G6A,100,  76, 145,  93, 100
+    MOVE G6D,100,  76, 145,  93, 100
+    MOVE G6B,100,  30,  80
+    MOVE G6C,100,  30,  80
+    WAIT
+
+    GOSUB MotorLegMode1
+    RETURN
+
 
 MotionGoRightSide50:
 
@@ -2375,8 +2583,8 @@ StateCornerRecognition_3:
 
 Main:
     GOSUB Initiate
-	
-	GOSUB MotorAllMode3
+
+    GOSUB MotorAllMode3
     'DELAY 5000
     '
     '    dWALK_NUMBER = 5
@@ -2436,36 +2644,77 @@ KEY4:
 
     '****************************
 KEY5:
-    GOSUB MotionTurnLeft10
+	IF mode = 1 THEN
+		GOSUB MotionTurnLeft10
+	
+	ELSEIF mode = 2 THEN
+		GOSUB MotionTurnLeft10_2
+	
+	ELSEIF mode = 3 THEN
+		GOSUB MotionTurnLeft20
+		
+	ELSEIF mode = 4 THEN
+		GOSUB MotionTurnLeft20_2
+	
+	ELSE
+		GOSUB MotionTurnLeft45
+	ENDIF
+	
     GOTO Main_2
 
     '****************************
 KEY6:
-    GOSUB MotionTurnRight10
+	IF mode = 1 THEN
+		GOSUB MotionTurnRight10
+	
+	ELSEIF mode = 2 THEN
+		GOSUB MotionTurnRight10_2
+	
+	ELSEIF mode = 3 THEN
+		GOSUB MotionTurnRight20
+		
+	ELSEIF mode = 4 THEN
+		GOSUB MotionTurnRight20_2
+		
+	ELSE 
+		GOSUB MotionTurnRight45
+	ENDIF
+	
     GOTO Main_2
-
-
+    
     '****************************
 KEY7:
-    GOSUB MotionTurnLeft20
+	IF mode = 1 THEN
+    	GOSUB MotionGoLeftSide20
+   
+   	ELSEIF mode = 2 THEN
+   		GOSUB MotionGoLeftSide50
+   	
+   	ENDIF
     GOTO Main_2
 
 
     '****************************
 KEY8:
-    GOSUB MotionTurnRight20
+	IF mode = 1 THEN
+		GOSUB MotionGoRightSide20
+
+   	ELSEIF mode = 2 THEN
+   		GOSUB MotionGoRightSide50
+   	
+   	ENDIF
     GOTO Main_2
 
     '****************************
 KEY9:
-    dHEAD_UD_ANGLE = 30
+    dHEAD_UD_ANGLE = 100
     GOSUB PostureHeadDown
     GOTO Main_2
 
 
     '****************************
 KEY10: '0
-    dHEAD_LR_ANGLE = 100
+    dHEAD_LR_ANGLE = 30
     GOSUB PostureHeadTurn
     GOTO Main_2
 
@@ -2493,7 +2742,7 @@ KEY12: ' ▼
     '********************************
 
 KEY13: ' ▶
-    GOSUB MotionGoRightSide50
+    GOSUB 물건집기
     GOTO Main_2
 
 
@@ -2501,7 +2750,7 @@ KEY13: ' ▶
     '********************************
 
 KEY14: ' ◀
-    GOSUB MotionGoLeftSide50
+    GOSUB 물건놓기
     GOTO Main_2
 
 
@@ -2517,6 +2766,35 @@ KEY15: ' A
     '********************************
 
 KEY16: ' POWER
+    ERX 4800, rx_data, KEY16
+    
+    IF rx_data = 1 THEN
+    	MUSIC "C"
+    	mode = 1
+    	
+    ELSEIF rx_data = 2 THEN
+    	MUSIC "C"
+    	MUSIC "C"
+    	mode = 2
+    
+    ELSEIF rx_data = 3 THEN
+    	MUSIC "C"
+    	MUSIC "C"
+    	MUSIC "C"
+    	mode = 3
+    
+    ELSEIF rx_data = 4 THEN
+    	MUSIC "C"
+    	MUSIC "C"
+    	MUSIC "C"
+    	MUSIC "C"
+    	mode = 4
+    	
+    ELSE 
+    	MUSIC "F"
+    	mode = 0
+    ENDIF
+    
     GOTO Main_2
 
 
@@ -2524,6 +2802,8 @@ KEY16: ' POWER
     '********************************
 
 KEY17: ' C
+    dWALK_NUMBER = 5
+    GOSUB MotionMilkWalk_low
     GOTO Main_2
 
 
@@ -2532,7 +2812,6 @@ KEY17: ' C
     '********************************
 
 KEY18: ' E
-    MUSIC "c"
     dWALK_NUMBER = 5
     GOSUB MotionMilkWalk_high
     GOTO Main_2
