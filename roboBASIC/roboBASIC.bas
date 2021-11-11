@@ -2638,71 +2638,71 @@ KEY3:
 
     '****************************
 KEY4:
-    GOSUB MotionOpenDoor
+    GOSUB MotionCountWalk_origin
     GOTO Main_2
 
 
     '****************************
 KEY5:
-	IF mode = 1 THEN
-		GOSUB MotionTurnLeft10
-	
-	ELSEIF mode = 2 THEN
-		GOSUB MotionTurnLeft10_2
-	
-	ELSEIF mode = 3 THEN
-		GOSUB MotionTurnLeft20
-		
-	ELSEIF mode = 4 THEN
-		GOSUB MotionTurnLeft20_2
-	
-	ELSE
-		GOSUB MotionTurnLeft45
-	ENDIF
-	
+    IF mode = 1 THEN
+        GOSUB MotionTurnLeft10
+
+    ELSEIF mode = 2 THEN
+        GOSUB MotionTurnLeft10_2
+
+    ELSEIF mode = 3 THEN
+        GOSUB MotionTurnLeft20
+
+    ELSEIF mode = 4 THEN
+        GOSUB MotionTurnLeft20_2
+
+    ELSE
+        GOSUB MotionTurnLeft45
+    ENDIF
+
     GOTO Main_2
 
     '****************************
 KEY6:
-	IF mode = 1 THEN
-		GOSUB MotionTurnRight10
-	
-	ELSEIF mode = 2 THEN
-		GOSUB MotionTurnRight10_2
-	
-	ELSEIF mode = 3 THEN
-		GOSUB MotionTurnRight20
-		
-	ELSEIF mode = 4 THEN
-		GOSUB MotionTurnRight20_2
-		
-	ELSE 
-		GOSUB MotionTurnRight45
-	ENDIF
-	
+    IF mode = 1 THEN
+        GOSUB MotionTurnRight10
+
+    ELSEIF mode = 2 THEN
+        GOSUB MotionTurnRight10_2
+
+    ELSEIF mode = 3 THEN
+        GOSUB MotionTurnRight20
+
+    ELSEIF mode = 4 THEN
+        GOSUB MotionTurnRight20_2
+
+    ELSE
+        GOSUB MotionTurnRight45
+    ENDIF
+
     GOTO Main_2
-    
+
     '****************************
 KEY7:
-	IF mode = 1 THEN
-    	GOSUB MotionGoLeftSide20
-   
-   	ELSEIF mode = 2 THEN
-   		GOSUB MotionGoLeftSide50
-   	
-   	ENDIF
+    IF mode = 1 THEN
+        GOSUB MotionGoLeftSide20
+
+    ELSEIF mode = 2 THEN
+        GOSUB MotionGoLeftSide50
+
+    ENDIF
     GOTO Main_2
 
 
     '****************************
 KEY8:
-	IF mode = 1 THEN
-		GOSUB MotionGoRightSide20
+    IF mode = 1 THEN
+        GOSUB MotionGoRightSide20
 
-   	ELSEIF mode = 2 THEN
-   		GOSUB MotionGoRightSide50
-   	
-   	ENDIF
+    ELSEIF mode = 2 THEN
+        GOSUB MotionGoRightSide50
+
+    ENDIF
     GOTO Main_2
 
     '****************************
@@ -2767,34 +2767,34 @@ KEY15: ' A
 
 KEY16: ' POWER
     ERX 4800, rx_data, KEY16
-    
+
     IF rx_data = 1 THEN
-    	MUSIC "C"
-    	mode = 1
-    	
+        MUSIC "C"
+        mode = 1
+
     ELSEIF rx_data = 2 THEN
-    	MUSIC "C"
-    	MUSIC "C"
-    	mode = 2
-    
+        MUSIC "C"
+        MUSIC "C"
+        mode = 2
+
     ELSEIF rx_data = 3 THEN
-    	MUSIC "C"
-    	MUSIC "C"
-    	MUSIC "C"
-    	mode = 3
-    
+        MUSIC "C"
+        MUSIC "C"
+        MUSIC "C"
+        mode = 3
+
     ELSEIF rx_data = 4 THEN
-    	MUSIC "C"
-    	MUSIC "C"
-    	MUSIC "C"
-    	MUSIC "C"
-    	mode = 4
-    	
-    ELSE 
-    	MUSIC "F"
-    	mode = 0
+        MUSIC "C"
+        MUSIC "C"
+        MUSIC "C"
+        MUSIC "C"
+        mode = 4
+
+    ELSE
+        MUSIC "F"
+        mode = 0
     ENDIF
-    
+
     GOTO Main_2
 
 
