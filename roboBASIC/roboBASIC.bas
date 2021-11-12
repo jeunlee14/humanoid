@@ -640,12 +640,11 @@ MotionCountWalk:
     dHEAD_UD_ANGLE = 30
     GOSUB PostureHeadDown
 
-    dWALK_SPEED = 13
+    dWALK_SPEED = 9
     dFALL_CHECK = 0
     dWALK_COUNT = 0
 
     GOSUB MotorAllMode3
-
     SPEED dWALK_SPEED
 
     IF dWALK_ORDER = 0 THEN
@@ -707,7 +706,7 @@ MotionCountWalk_1_Stop:
     WAIT
 
 
-    SPEED 7
+    SPEED 5
     GOSUB PostureInit2
 
     SPEED 4
@@ -748,7 +747,7 @@ MotionCountWalk_2_Stop:
     MOVE G6C,100
     WAIT
 
-    SPEED 7
+    SPEED 5
     GOSUB PostureInit
 
     SPEED 4
@@ -759,6 +758,123 @@ MotionCountWalk_2_Stop:
 
     '****************************************
 
+MotionCountWalk_slow:
+    GOSUB MotorAllMode3
+
+    dHEAD_UD_ANGLE = 30
+    GOSUB PostureHeadDown
+
+    dWALK_COUNT = 0
+    dWALK_SPEED = 12
+    SPEED dWALK_SPEED
+
+    IF dWALK_ORDER = 0 THEN
+        dWALK_ORDER = 1
+        MOVE G6A,95,  76, 147,  93, 101
+        MOVE G6D,101,  76, 147,  93, 98
+        MOVE G6B,100
+        MOVE G6C,100
+        WAIT
+
+        GOTO MotionCountWalk_slow_1
+    ELSE
+        dWALK_ORDER = 0
+        MOVE G6D,95,  76, 147,  93, 101
+        MOVE G6A,101,  76, 147,  93, 98
+        MOVE G6B,100
+        MOVE G6C,100
+        WAIT
+
+        GOTO MotionCountWalk_slow_2
+    ENDIF
+
+
+MotionCountWalk_slow_1:
+    MOVE G6A,95,  90, 125, 100, 104
+    MOVE G6D,102,  77, 147,  93,  102
+    MOVE G6B, 85
+    MOVE G6C,115
+    WAIT
+
+    SPEED 6
+    MOVE G6A,103,   73, 140, 103,  100
+    MOVE G6D, 95,  85, 147,  85, 102
+    WAIT
+
+    SPEED dWALK_SPEED
+
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionCountWalk_slow_1_stop
+
+    ELSE
+        GOTO MotionCountWalk_slow_2
+
+    ENDIF
+
+MotionCountWalk_slow_1_stop:
+    MOVE G6A,104,  76, 145,  91,  102	
+    MOVE G6D,98,  90, 125, 95, 104
+    MOVE G6C, 100
+    MOVE G6B,100
+    WAIT
+
+    SPEED 6
+    MOVE G6A, 100,  76, 145,  93, 100, 100
+    MOVE G6D, 100,  76, 145,  93, 100, 100
+
+
+    SPEED 5
+    GOSUB PostureDefault
+
+    'DELAY 400
+    RETURN
+
+MotionCountWalk_slow_2:
+    MOVE G6D,95,  95, 120, 100, 104
+    MOVE G6A,102,  77, 147,  93,  102
+    MOVE G6C, 85
+    MOVE G6B,115
+    WAIT
+
+    SPEED 6
+    MOVE G6D,103,    73, 140, 103,  100
+    MOVE G6A, 95,  85, 147,  85, 102
+    WAIT
+
+    SPEED dWALK_SPEED
+
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionCountWalk_slow_2_stop
+
+    ELSE
+        GOTO MotionCountWalk_slow_1
+
+    ENDIF
+
+
+MotionCountWalk_slow_2_stop:
+    MOVE G6D,104,  76, 145,  91,  102
+    MOVE G6A,98,  90, 125, 95, 104
+    MOVE G6B, 100
+    MOVE G6C,100
+    WAIT
+
+    SPEED 6
+    MOVE G6D, 100,  76, 145,  93, 100, 100
+    MOVE G6A, 100,  76, 145,  93, 100, 100
+
+    SPEED 5
+    GOSUB PostureDefault2
+
+    RETURN
+
+
+    '****************************************
+    
 MotionCountWalk_origin:
     GOSUB MotorAllMode3
     dWALK_COUNT = 0
@@ -878,6 +994,7 @@ MotionCountWalk_origin_2_stop:
 
 
     '****************************************
+    
 MotionMilkWalk_high:
 
     dWALK_SPEED = 9
@@ -1455,7 +1572,11 @@ MotionTurnRight20_2:
 
 MotionTurnLeft45:
 
-    GOSUB MotorLegMode2
+    GOSUB GyroOff
+
+    MOTORMODE G6A,3,3,3,2,2
+    MOTORMODE G6D,3,3,3,2,2
+
     SPEED 8
     MOVE G6A,95,  106, 145,  63, 105, 100
     MOVE G6D,95,  46, 145,  123, 105, 100
@@ -1472,11 +1593,16 @@ MotionTurnLeft45:
 
     GOSUB PostureDefault
 
+    GOSUB GyroOn
     RETURN
 
 MotionTurnRight45:
 
-    GOSUB MotorLegMode2
+    GOSUB GyroOff
+
+    MOTORMODE G6A,3,3,3,2,2
+    MOTORMODE G6D,3,3,3,2,2
+
     SPEED 8
     MOVE G6A,95,  46, 145,  123, 105, 100
     MOVE G6D,95,  106, 145,  63, 105, 100
@@ -1493,11 +1619,15 @@ MotionTurnRight45:
 
     GOSUB PostureDefault
 
+    GOSUB GyroOn
     RETURN
 
 MotionTurnLeft60:
-    MOTORMODE G6A,3,3,3,3,2
-    MOTORMODE G6D,3,3,3,3,2
+
+    GOSUB GyroOff
+
+    MOTORMODE G6A,3,3,3,2,2
+    MOTORMODE G6D,3,3,3,2,2
 
     SPEED 15
     MOVE G6A,95,  116, 145,  53, 105, 100
@@ -1512,11 +1642,15 @@ MotionTurnLeft60:
     SPEED 10
     GOSUB PostureInit
 
+    GOSUB GyroOn
     RETURN
 
 MotionTurnRight60:
-    MOTORMODE G6A,3,3,3,3,2
-    MOTORMODE G6D,3,3,3,3,2
+
+    GOSUB GyroOff
+
+    MOTORMODE G6A,3,3,3,2,2
+    MOTORMODE G6D,3,3,3,2,2
 
     SPEED 15
     MOVE G6A,95,  36, 145,  133, 105, 100
@@ -1532,6 +1666,7 @@ MotionTurnRight60:
     SPEED 10
     GOSUB PostureInit
 
+    GOSUB GyroOn
     RETURN
 
     '****************************************
@@ -1883,7 +2018,9 @@ MotionGoRightSide50:
     WAIT
 
     SPEED 1
+
     GOSUB PostureDefault2
+
     GOSUB MotorAllMode1	
     RETURN
     '************************************************
@@ -2638,7 +2775,7 @@ KEY3:
 
     '****************************
 KEY4:
-    GOSUB MotionCountWalk_origin
+    GOSUB MotionCountWalk_slow
     GOTO Main_2
 
 
