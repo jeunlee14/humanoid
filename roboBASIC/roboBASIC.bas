@@ -635,12 +635,16 @@ MotionRun_5_stop:
 
     RETURN
 
+    '*********************************
+
 MotionCountWalk:
 
     dHEAD_UD_ANGLE = 30
     GOSUB PostureHeadDown
+    HIGHSPEED SETON
 
-    dWALK_SPEED = 9
+
+    dWALK_SPEED = 7
     dFALL_CHECK = 0
     dWALK_COUNT = 0
 
@@ -649,23 +653,24 @@ MotionCountWalk:
 
     IF dWALK_ORDER = 0 THEN
         dWALK_ORDER = 1
-
-        MOVE G6D,95,  76, 147,  93, 95
-        MOVE G6A,101,  76, 147,  93, 98
+        
+        MOVE G6A,95,  76, 147,  93, 97, 100
+		MOVE G6D,101,  76, 147,  93, 96, 100
         MOVE G6B,100
         MOVE G6C,100
-        WAIT
+		WAIT
 
         GOTO MotionCountWalk_1
 
     ELSE
         dWALK_ORDER = 0
-
-        MOVE G6A,95,  76, 147,  93, 95
-        MOVE G6D,101,  76, 147,  93, 98
+        
+		MOVE G6D,95,  76, 147,  93, 97, 100
+		MOVE G6A,101,  76, 147,  93, 96, 100
         MOVE G6B,100
         MOVE G6C,100
-
+        WAIT
+        
         GOTO MotionCountWalk_2
 
     ENDIF
@@ -674,8 +679,8 @@ MotionCountWalk:
     '************************************	
 
 MotionCountWalk_1:
-    MOVE G6A,85,  90, 125, 100, 109
-    MOVE G6D,104,  77, 147,  93,  97
+    MOVE G6A, 94,  90, 125, 100, 103
+    MOVE G6D, 103,  77, 147,  93,  101
     MOVE G6B, 85
     MOVE G6C, 115
     WAIT
@@ -696,30 +701,28 @@ MotionCountWalk_1:
 
 
 MotionCountWalk_1_Stop:
-
-    SPEED 9
-
-    MOVE G6D,85,  90, 125, 95, 104
-    MOVE G6A,102,  76, 145,  91,  102
+    MOVE G6D,95,  90, 125, 95, 102
+    MOVE G6A,98,  76, 145,  91,  100
     MOVE G6C, 100
     MOVE G6B,100
     WAIT
 
-
-    SPEED 5
+    SPEED 3
     GOSUB PostureInit2
 
-    SPEED 4
+    SPEED 1
     GOSUB PostureDefault2
 
+    DELAY 100
+    HIGHSPEED SETOFF
 
     RETURN
 
     '************************************
 
 MotionCountWalk_2:
-    MOVE G6D,85,  90, 125, 100, 109
-    MOVE G6A,104,  77, 147,  93,  97
+    MOVE G6D,94,  90, 125, 100, 103
+    MOVE G6A,103,  77, 147,  93,  101
     MOVE G6C, 85
     MOVE G6B,115
     WAIT
@@ -740,22 +743,153 @@ MotionCountWalk_2:
 
 
 MotionCountWalk_2_Stop:
-    SPEED 9
-    MOVE G6A,85,  90, 125, 95, 104
+    MOVE G6A,95,  90, 125, 95, 102
+    MOVE G6D,98,  76, 145,  91,  100
+    MOVE G6B, 100
+    MOVE G6C,100
+    WAIT
+
+    SPEED 3
+    GOSUB PostureInit
+
+    SPEED 1
+    GOSUB PostureDefault
+
+    DELAY 100
+    HIGHSPEED SETOFF
+
+    RETURN
+
+    '************************************	
+    '************************************
+    '************************************
+
+
+MotionCountWalk2:
+
+    dHEAD_UD_ANGLE = 30
+    GOSUB PostureHeadDown
+    HIGHSPEED SETON
+
+
+    dWALK_SPEED = 7
+    dFALL_CHECK = 0
+    dWALK_COUNT = 0
+
+    GOSUB MotorAllMode3
+    SPEED dWALK_SPEED
+
+    IF dWALK_ORDER = 0 THEN
+        dWALK_ORDER = 1
+
+        MOVE G6A,101,  76, 147,  93, 98
+        MOVE G6D,95,  76, 147,  93, 95
+        MOVE G6B,100
+        MOVE G6C,100
+        WAIT
+
+        GOTO MotionCountWalk2_1
+
+    ELSE
+        dWALK_ORDER = 0
+
+        MOVE G6D,101,  76, 147,  93, 98
+        MOVE G6A,95,  76, 147,  93, 95
+        MOVE G6B,100
+        MOVE G6C,100
+
+        GOTO MotionCountWalk2_2
+
+    ENDIF
+
+
+    '************************************	
+
+MotionCountWalk2_1:
+    MOVE G6A,85,  90, 125, 100, 109
+    MOVE G6D,104,  77, 147,  93,  97
+    MOVE G6B, 85
+    MOVE G6C, 115
+    WAIT
+
+    MOVE G6A,103,   73, 140, 103,  100
+    MOVE G6D, 95,  85, 147,  85, 102
+    WAIT
+
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionCountWalk2_1_Stop
+
+    ELSE
+        GOTO MotionCountWalk2_2
+
+    ENDIF
+
+
+MotionCountWalk2_1_Stop:
+
+    SPEED 7
+
+    MOVE G6D,90,  90, 125, 95, 104
+    MOVE G6A,102,  76, 145,  91,  102
+    MOVE G6C, 100
+    MOVE G6B,100
+    WAIT
+
+    SPEED 3
+    GOSUB PostureInit
+
+    SPEED 1
+    GOSUB PostureDefault
+
+    DELAY 100
+    HIGHSPEED SETOFF
+
+    RETURN
+
+    '************************************
+
+MotionCountWalk2_2:
+    MOVE G6D,85,  90, 125, 100, 109
+    MOVE G6A,104,  77, 147,  93,  97
+    MOVE G6C, 85
+    MOVE G6B,115
+    WAIT
+
+    MOVE G6D,103,    73, 140, 103,  100
+    MOVE G6A, 95,  85, 147,  85, 102
+    WAIT
+
+    dWALK_COUNT = dWALK_COUNT + 1
+
+    IF dWALK_COUNT > dWALK_NUMBER THEN
+        GOTO MotionCountWalk2_2_Stop
+
+    ELSE
+        GOTO MotionCountWalk2_1
+
+    ENDIF
+
+
+MotionCountWalk2_2_Stop:
+    SPEED 7
+    MOVE G6A,90,  90, 125, 95, 104
     MOVE G6D,102,  76, 145,  91,  102
     MOVE G6B, 100
     MOVE G6C,100
     WAIT
 
-    SPEED 5
-    GOSUB PostureInit
+    SPEED 3
+    GOSUB PostureInit2
 
-    SPEED 4
-    GOSUB PostureDefault
+    SPEED 1
+    GOSUB PostureDefault2
 
+    DELAY 100
+    HIGHSPEED SETOFF
 
     RETURN
-
     '****************************************
 
 MotionCountWalk_slow:
@@ -764,8 +898,10 @@ MotionCountWalk_slow:
     dHEAD_UD_ANGLE = 30
     GOSUB PostureHeadDown
 
+    HIGHSPEED SETON
+
     dWALK_COUNT = 0
-    dWALK_SPEED = 12
+    dWALK_SPEED = 6
     SPEED dWALK_SPEED
 
     IF dWALK_ORDER = 0 THEN
@@ -820,6 +956,8 @@ MotionCountWalk_slow_1_stop:
     MOVE G6B,100
     WAIT
 
+    HIGHSPEED SETOFF
+
     SPEED 6
     MOVE G6A, 100,  76, 145,  93, 100, 100
     MOVE G6D, 100,  76, 145,  93, 100, 100
@@ -863,6 +1001,8 @@ MotionCountWalk_slow_2_stop:
     MOVE G6C,100
     WAIT
 
+    HIGHSPEED SETOFF
+
     SPEED 6
     MOVE G6D, 100,  76, 145,  93, 100, 100
     MOVE G6A, 100,  76, 145,  93, 100, 100
@@ -874,13 +1014,13 @@ MotionCountWalk_slow_2_stop:
 
 
     '****************************************
-    
+
 MotionCountWalk_origin:
     GOSUB MotorAllMode3
     dWALK_COUNT = 0
-    SPEED 7
-    HIGHSPEED SETON
 
+    HIGHSPEED SETON
+    SPEED 7
 
     IF dWALK_ORDER = 0 THEN
         dWALK_ORDER = 1
@@ -915,12 +1055,6 @@ MotionCountWalk_origin_1:
     MOVE G6D, 95,  85, 147,  85, 102
     WAIT
 
-    GOSUB CheckTiltFB
-    IF dFALL_CHECK = 1 THEN
-        dFALL_CHECK = 0
-        GOTO MAIN
-    ENDIF
-
     dWALK_COUNT = dWALK_COUNT + 1
 
     IF dWALK_COUNT > dWALK_NUMBER THEN
@@ -938,9 +1072,12 @@ MotionCountWalk_origin_1_stop:
     MOVE G6B,100
     WAIT
 
-    HIGHSPEED SETOFF
-    SPEED 15
+    SPEED 4
     GOSUB PostureInit
+
+    DELAY 100
+    HIGHSPEED SETOFF
+
     SPEED 5
     GOSUB PostureDefault
 
@@ -957,13 +1094,6 @@ MotionCountWalk_origin_2:
     MOVE G6D,103,    73, 140, 103,  100
     MOVE G6A, 95,  85, 147,  85, 102
     WAIT
-
-
-    GOSUB CheckTiltFB
-    IF dFALL_CHECK = 1 THEN
-        dFALL_CHECK = 0
-        GOTO MAIN
-    ENDIF
 
     dWALK_COUNT = dWALK_COUNT + 1
 
@@ -983,9 +1113,12 @@ MotionCountWalk_origin_2_stop:
     MOVE G6C,100
     WAIT
 
-    HIGHSPEED SETOFF
-    SPEED 15
+
+    SPEED 4
     GOSUB PostureInit
+
+    DELAY 100
+    HIGHSPEED SETOFF
 
     SPEED 5
     GOSUB PostureDefault
@@ -994,7 +1127,7 @@ MotionCountWalk_origin_2_stop:
 
 
     '****************************************
-    
+
 MotionMilkWalk_high:
 
     dWALK_SPEED = 9
@@ -2793,8 +2926,11 @@ KEY5:
     ELSEIF mode = 4 THEN
         GOSUB MotionTurnLeft20_2
 
-    ELSE
+    ELSEIF mode = 5 THEN
         GOSUB MotionTurnLeft45
+
+    ELSE
+        GOSUB MotionTurnLeft60
     ENDIF
 
     GOTO Main_2
@@ -2813,8 +2949,11 @@ KEY6:
     ELSEIF mode = 4 THEN
         GOSUB MotionTurnRight20_2
 
-    ELSE
+    ELSEIF mode = 5 THEN
         GOSUB MotionTurnRight45
+
+    ELSE
+        GOSUB MotionTurnRight60
     ENDIF
 
     GOTO Main_2
@@ -2860,19 +2999,28 @@ KEY10: '0
     '********************************
 
 KEY11: ' ▲
-    dWALK_NUMBER = 10
-    GOSUB MotionCountWalk
+    FOR i = 1 TO 2
+
+        dWALK_NUMBER = 2
+        GOSUB MotionCountWalk
+    NEXT i
+
     GOTO Main_2
-
-
     '****************************
     '********************************
 
 KEY12: ' ▼
-    dWALK_NUMBER = 1
-    GOSUB MotionRun
-    GOTO Main_2
+    'dWALK_NUMBER = 1
+    'GOSUB MotionRun
+    'GOTO Main_2
 
+    FOR i = 1 TO 2
+
+        dWALK_NUMBER = 2
+        GOSUB MotionCountWalk2
+    NEXT i
+
+    GOTO Main_2
 
 
     '****************************
@@ -2927,9 +3075,18 @@ KEY16: ' POWER
         MUSIC "C"
         mode = 4
 
+    ELSEIF rx_data = 5 THEN
+        MUSIC "C"
+        MUSIC "C"
+        MUSIC "C"
+        MUSIC "C"
+        MUSIC "C"
+        mode = 5
+
     ELSE
         MUSIC "F"
         mode = 0
+
     ENDIF
 
     GOTO Main_2
@@ -2958,10 +3115,16 @@ KEY18: ' E
     '********************************
 
 KEY19: ' P2
+    dHEAD_UD_ANGLE = 30
+    GOSUB PostureHeadDown
+
+    FOR i = 1 TO 2
+
+        dWALK_NUMBER = 2
+        GOSUB MotionCountWalk_origin
+    NEXT i
+
     GOTO Main_2
-
-
-
     '****************************
     '********************************
 
@@ -3056,6 +3219,8 @@ KEY31: ' ▽
 
 KEY32: ' F
     'GOTO StateMilkPosionFind_1
+    
+    GOSUB MotorAllMode1
     GOTO Main_2
 
     '********** Key End **********'
